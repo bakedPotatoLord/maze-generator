@@ -1,11 +1,27 @@
 
 let c = document.querySelector("canvas")
 let ctx = c.getContext("2d")
+let form = document.forms[0]
 ctx.fillStyle = "black"
 
-const cw = c.width = 400
-const ch = c.height =400
-window.onload = ()=>{ start() }
+let cw 
+let ch 
+
+
+let fill 
+let blockSize 
+
+function setup(heigth:number,width:number,blockSizeP:number,fillP:number){
+
+  cw = c.width = width
+  ch = c.height =heigth
+
+  fill = fillP
+  blockSize = blockSizeP
+  
+}
+
+setup(400,400,0.8,40)
 
 export const TAU = 2*Math.PI
 class Node{
@@ -28,13 +44,14 @@ class Node{
     this.isStartingNode = false
     this.visited = false
     this.generation = 0
-    this.lines = Array(4).fill(false).map((el,i)=>  Math.random() >= 0.80)
+    this.lines = Array(4).fill(false).map(()=>  Math.random() >= fill)
   }
 
   topLine(){
+    ctx.strokeStyle = 'black'
     ctx.beginPath()
-    ctx.moveTo(-cw/20,-ch/20)
-    ctx.lineTo(-cw/20,ch/20)
+    ctx.moveTo(-(blockSize/2),-(blockSize/2))
+    ctx.lineTo(-(blockSize/2),(blockSize/2))
     ctx.stroke()
   }
 
@@ -48,34 +65,23 @@ class Node{
     }
     if(this.isEndingNode || this.isStartingNode){
       ctx.beginPath()
-      ctx.arc(this.x,this.y,ch/40,0,TAU)
+      ctx.arc(this.x,this.y,blockSize/3,0,TAU)
       ctx.fill()
     }
     ctx.save()
     ctx.translate(this.x,this.y)
-    if(this.lines[0]){
-      this.topLine()
-    }
-    ctx.rotate(Math.PI /2)
-    if(this.lines[1]){
-      this.topLine()
-    }
-    ctx.rotate(Math.PI /2)
-    if(this.lines[2]){
-      this.topLine()
-    }
-    ctx.rotate(Math.PI /2)
-    if(this.lines[3]){
-      this.topLine()
-    }
+    Array(4).fill(0).forEach((_el,i)=>{
+      if(this.lines[i]){
+        this.topLine()
+      }
+      ctx.rotate(Math.PI /2)
+    })
     ctx.restore()
   
     //0 is left
     //1 is up
     //2 is right
     //3 is down
-
-
   }
 
   addChildren=(...node:Node[])=>this.children.push(...node)
@@ -83,11 +89,11 @@ class Node{
   getTouchingNodes(){
     return nodes.filter(n=>{
         return (this != n) && 
-        (Math.hypot(this.x-n.x,this.y-n.y) == 40 ) &&
-        (!(n.y < this.y  && (this.lines[1] || n.lines[3]))) &&
-        (!(n.y > this.y  && (this.lines[3] || n.lines[1]))) &&
-        (!(n.x < this.x  && (this.lines[0] || n.lines[2]))) &&
-        (!(n.x > this.x  && (this.lines[2] || n.lines[0]))) 
+        (Math.hypot(this.x-n.x,this.y-n.y) == blockSize ) &&
+        !(n.y < this.y  && (this.lines[1] || n.lines[3])) &&
+        !(n.y > this.y  && (this.lines[3] || n.lines[1])) &&
+        !(n.x < this.x  && (this.lines[0] || n.lines[2])) &&
+        !(n.x > this.x  && (this.lines[2] || n.lines[0])) 
 
     })
   }
@@ -98,24 +104,29 @@ class Node{
     ctx.stroke()
   }
 }
-let nodes = Array((cw/40)*(ch/40)).fill(0).map((el,i)=>
-new Node((i%10*(cw/10))+(cw/20),(Math.floor(i/10)*(cw/10))+(cw/20)))
+let nodes:Node[] = []
 
-
-function start(){
+function draw(){
   console.log("started")
-  ctx.rect(0,0,cw,ch)
 
+  ctx.clearRect(0,0,cw,ch)
+  ctx.strokeStyle = 'black'
+  ctx.strokeRect(0,0,cw,ch)
+  ctx.strokeRect(0,0,cw,ch)
+  
+  nodes = Array((cw/blockSize)*(ch/blockSize)).fill(0).map((_el,i)=>{
+    return new Node(
+      (i%(cw/blockSize)*(blockSize))+(blockSize/2),
+      (Math.floor(i/(cw/blockSize))*(blockSize))+(blockSize/2))
+  })   
   var startingNode = nodes[0]
   startingNode.isStartingNode = true
   var endingNode = nodes[nodes.length-1]
-  while(startingNode == endingNode ) endingNode = nodes[Math.floor(Math.random()*nodes.length)]
   endingNode.isEndingNode = true
 
   nodes.forEach(el=>el.draw())
 
-
-  BFS(startingNode,nodes)
+  console.log(BFS(startingNode,nodes) )
 
   let n = endingNode
 
@@ -126,13 +137,11 @@ function start(){
     ctx.moveTo(n.x,n.y)
     ctx.lineTo(n.parent.x,n.parent.y)
     ctx.stroke()
-
     n = n.parent
+
   }
-  
 
   console.log()
-
 }
 
 export function BFS(start:Node,nodes:Node[],traceRoutes?:boolean){
@@ -162,6 +171,18 @@ export function BFS(start:Node,nodes:Node[],traceRoutes?:boolean){
     }
   }
   return 'unsolvable'
+}
+
+form.onsubmit= (e)=>{
+  e.preventDefault()
+  let data = (new FormData(<HTMLFormElement>e.target))
+  //@ts-ignore
+  let parsedData:[number,number,number,number] = Array.from(data.entries()).map(el=>el[1])
+  setup(
+    ...parsedData
+
+  )
+  draw()
 }
 
 
