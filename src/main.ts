@@ -1,27 +1,39 @@
 
-let c = document.querySelector("canvas")
+let c = document.querySelectorAll("canvas")[0]
+let c2 = document.querySelectorAll("canvas")[1]
 let ctx = c.getContext("2d")
+let ctx2 = c2.getContext("2d")
 let form = document.forms[0]
 ctx.fillStyle = "black"
 
-let cw 
-let ch 
+ctx.globalCompositeOperation = 'lighter'
+ctx2.globalCompositeOperation = 'copy'
+
+let cw:number
+let ch:number 
 
 
-let fill 
-let blockSize 
+let fill:number
+let blockSize:number
 
 function setup(heigth:number,width:number,blockSizeP:number,fillP:number){
-
-  cw = c.width = width
-  ch = c.height =heigth
-
-  fill = fillP
-  blockSize = blockSizeP
+  if(fillP < 0.7){
+    if(!window.confirm('difficultties under 0.7 can take VERY LONG to render. are you sure that you want to continue')){
+      throw [false]
+    }
+  } 
+  if( width % blockSizeP == 0 && width % blockSizeP == 0){
+    
+    cw = c.width =c2.width= width
+    ch = c.height= c2.height =heigth
+  
+    fill = fillP
+    blockSize = blockSizeP
+  }else{
+    throw [true,new Error('Width and Heigth must be a multiple of blockSize')]
+  }
   
 }
-
-setup(400,400,0.8,40)
 
 export const TAU = 2*Math.PI
 class Node{
@@ -53,9 +65,15 @@ class Node{
     ctx.moveTo(-(blockSize/2),-(blockSize/2))
     ctx.lineTo(-(blockSize/2),(blockSize/2))
     ctx.stroke()
+
+    ctx2.strokeStyle = 'black'
+    ctx2.beginPath()
+    ctx2.moveTo(-(blockSize/2),-(blockSize/2))
+    ctx2.lineTo(-(blockSize/2),(blockSize/2))
+    ctx2.stroke()
   }
 
-  draw(){
+  draw(ctx:CanvasRenderingContext2D){
     if(this.isStartingNode){
       ctx.fillStyle = "green"
     }else if(this.isEndingNode){
@@ -77,7 +95,6 @@ class Node{
       ctx.rotate(Math.PI /2)
     })
     ctx.restore()
-  
     //0 is left
     //1 is up
     //2 is right
@@ -87,15 +104,14 @@ class Node{
   addChildren=(...node:Node[])=>this.children.push(...node)
 
   getTouchingNodes(){
-    return nodes.filter(n=>{
-        return (this != n) && 
-        (Math.hypot(this.x-n.x,this.y-n.y) == blockSize ) &&
-        !(n.y < this.y  && (this.lines[1] || n.lines[3])) &&
-        !(n.y > this.y  && (this.lines[3] || n.lines[1])) &&
-        !(n.x < this.x  && (this.lines[0] || n.lines[2])) &&
-        !(n.x > this.x  && (this.lines[2] || n.lines[0])) 
-
-    })
+    return nodes.filter(n=>
+      (this != n) && 
+      (Math.hypot(this.x-n.x,this.y-n.y) == blockSize ) &&
+      !(n.y < this.y  && (this.lines[1] || n.lines[3])) &&
+      !(n.y > this.y  && (this.lines[3] || n.lines[1])) &&
+      !(n.x < this.x  && (this.lines[0] || n.lines[2])) &&
+      !(n.x > this.x  && (this.lines[2] || n.lines[0])) 
+    )
   }
 
   drawLineTo(node:Node){
@@ -109,10 +125,18 @@ let nodes:Node[] = []
 function draw(){
   console.log("started")
 
+  ctx.fillStyle  = 'white'
+  ctx2.fillStyle  = 'white'
+
   ctx.clearRect(0,0,cw,ch)
   ctx.strokeStyle = 'black'
+  ctx.fillRect(0,0,cw,ch)
   ctx.strokeRect(0,0,cw,ch)
-  ctx.strokeRect(0,0,cw,ch)
+
+  ctx2.clearRect(0,0,cw,ch)
+  ctx2.strokeStyle = 'black'
+  ctx2.fillRect(0,0,cw,ch)
+  ctx2.strokeRect(0,0,cw,ch)
   
   nodes = Array((cw/blockSize)*(ch/blockSize)).fill(0).map((_el,i)=>{
     return new Node(
@@ -123,25 +147,29 @@ function draw(){
   startingNode.isStartingNode = true
   var endingNode = nodes[nodes.length-1]
   endingNode.isEndingNode = true
+  
+  nodes.forEach(el=>el.draw(ctx))
+  
+  let result = BFS(startingNode,nodes,false) 
+  
+  if(result ){
+    let n = endingNode
+    
+    while(n.parent != undefined){
+      ctx.lineWidth = 3
+      ctx.strokeStyle = 'blue'
+      ctx.beginPath()
+      ctx.moveTo(n.x,n.y)
+      ctx.lineTo(n.parent.x,n.parent.y)
+      ctx.stroke()
+      n = n.parent
+    }
 
-  nodes.forEach(el=>el.draw())
-
-  console.log(BFS(startingNode,nodes) )
-
-  let n = endingNode
-
-  while(n.parent != undefined){
-    ctx.lineWidth = 3
-    ctx.strokeStyle = 'blue'
-    ctx.beginPath()
-    ctx.moveTo(n.x,n.y)
-    ctx.lineTo(n.parent.x,n.parent.y)
-    ctx.stroke()
-    n = n.parent
-
+    nodes.forEach(el=>el.draw(ctx2))
+  }else{
+    //console.log('retrying')
+    requestAnimationFrame(draw)
   }
-
-  console.log()
 }
 
 export function BFS(start:Node,nodes:Node[],traceRoutes?:boolean){
@@ -167,10 +195,10 @@ export function BFS(start:Node,nodes:Node[],traceRoutes?:boolean){
         child.visited = true
         que.push(child)
       }
-      if(child.isEndingNode) return 'done'
+      if(child.isEndingNode) return true
     }
   }
-  return 'unsolvable'
+  return false
 }
 
 form.onsubmit= (e)=>{
@@ -178,13 +206,31 @@ form.onsubmit= (e)=>{
   let data = (new FormData(<HTMLFormElement>e.target))
   //@ts-ignore
   let parsedData:[number,number,number,number] = Array.from(data.entries()).map(el=>el[1])
-  setup(
-    ...parsedData
+  try{
 
-  )
+    setup(...parsedData)
+  }catch(err){
+    if(err[0]) alert(err[1])
+    return
+  }
   draw()
 }
 
+(<HTMLButtonElement>document.querySelector('#d')).onclick = ()=> download(false);
+(<HTMLButtonElement>document.querySelector('#ds')).onclick = ()=> download(true);
+
+export function download(withSol:boolean){
+  let a = document.createElement('a')
+  document.body.appendChild(a)
+  if(withSol){
+    a.href = c.toDataURL()
+    a.download = 'mazeSolution.png'
+  }else{
+    a.href = c2.toDataURL()
+    a.download = 'maze.png'
+  }
+  a.click()
+}
 
 
 export{}
