@@ -128,16 +128,16 @@ export function download(withSol:boolean){
 }
 
 
-/*
+
 const X = 10,
-  Y = 10;
+Y = 10;
 
 console.log(`Generating a maze of ${X} x ${Y}...`);
 
 let m = maze(X,Y)
 console.log(m)
 display(maze(X, Y), console.log);
-*/
+
 
 
 export{}
