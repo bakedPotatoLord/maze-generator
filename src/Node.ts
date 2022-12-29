@@ -11,8 +11,8 @@ export default class Node{
   isWall:boolean
   visited:boolean
   generation:number
-  lines: boolean[]
-  constructor(x:number,y:number,fill:number,parent?:Node){
+  wallsTo:Node[]
+  constructor(x:number,y:number,parent?:Node){
     this.x =x
     this.y=y
     this.children = []
@@ -21,7 +21,6 @@ export default class Node{
     this.isStartingNode = false
     this.visited = false
     this.generation = 0
-    this.lines = Array(4).fill(false).map(()=>  Math.random() >= fill)
   }
 
   topLine(ctx:CanvasRenderingContext2D,blockSize:number){
@@ -39,7 +38,7 @@ export default class Node{
 
   }
 
-  draw(ctx:CanvasRenderingContext2D,blockSize){
+  draw(ctx:CanvasRenderingContext2D,blockSize:number){
     if(this.isStartingNode){
       ctx.fillStyle = "green"
     }else if(this.isEndingNode){
@@ -52,19 +51,21 @@ export default class Node{
       ctx.arc(this.x,this.y,blockSize/3,0,TAU)
       ctx.fill()
     }
-    ctx.save()
-    ctx.translate(this.x,this.y)
-    Array(4).fill(0).forEach((_el,i)=>{
-      if(this.lines[i]){
-        this.topLine(ctx,blockSize)
-      }
-      ctx.rotate(Math.PI /2)
+
+    this.wallsTo.forEach((el)=>{
+      ctx.save()
+      ctx.translate(this.x,this.y)
+      ctx.rotate(Math.atan2(this.y-el.y,this.x-el.x)+ Math.PI)
+
+      ctx.beginPath()
+      ctx.moveTo(blockSize/2,blockSize/2)
+      ctx.lineTo(blockSize/2,-blockSize/2)
+      ctx.stroke()
+
+      ctx.restore()
+
     })
-    ctx.restore()
-    //0 is left
-    //1 is up
-    //2 is right
-    //3 is down
+
   }
 
   addChildren=(...node:Node[])=>this.children.push(...node)
@@ -72,15 +73,21 @@ export default class Node{
   getTouchingNodes(nodes:Node[],blockSize:number){
     return nodes.filter(n=>
       (this != n) && 
-      (Math.hypot(this.x-n.x,this.y-n.y) == blockSize ) &&
-      !(n.y < this.y  && (this.lines[1] || n.lines[3])) &&
-      !(n.y > this.y  && (this.lines[3] || n.lines[1])) &&
-      !(n.x < this.x  && (this.lines[0] || n.lines[2])) &&
-      !(n.x > this.x  && (this.lines[2] || n.lines[0])) 
+      (Math.hypot(this.x-n.x,this.y-n.y) == blockSize )
+    )
+  }
+
+  getViableNodes(nodes:Node[],blockSize:number){
+    let tNodes = this.getTouchingNodes(nodes,blockSize)
+    return tNodes
+    .filter(
+      el=>!this.wallsTo.includes(el) && 
+      !el.wallsTo.includes(this)
     )
   }
 
   drawLineTo(node:Node,ctx:CanvasRenderingContext2D){
+    ctx.beginPath()
     ctx.moveTo(this.x,this.y)
     ctx.lineTo(node.x,node.y)
     ctx.stroke()
