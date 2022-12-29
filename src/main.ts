@@ -2,7 +2,9 @@
 import Node from "./Node"
 import BFS from "./bfs"
 
+
 import { maze,display } from "./maze"
+import rdfs from "./rdfs"
 
 let c = document.querySelectorAll("canvas")[0]
 let c2 = document.querySelectorAll("canvas")[1]
@@ -21,6 +23,12 @@ export let ch:number
 export let fill:number
 export let blockSize:number
 
+let nodes:Node[] = []
+let startingNode:Node;
+let endingNode:Node;
+
+let parsedData:[number,number,number,number]
+
 function setup(heigth:number,width:number,blockSizeP:number,fillP:number){
   if(fillP < 0.7){
     if(!window.confirm('difficultties under 0.7 can take VERY LONG to render. are you sure that you want to continue')){
@@ -32,17 +40,30 @@ function setup(heigth:number,width:number,blockSizeP:number,fillP:number){
     cw = c.width =c2.width= width
     ch = c.height= c2.height =heigth
   
-    fill = fillP
+    fill =parseFloat( fillP.toString())
     blockSize = blockSizeP
   }else{
     throw [true,new Error('Width and Heigth must be a multiple of blockSize')]
   }
+
+  nodes = Array((cw/blockSize)*(ch/blockSize)).fill(0).map((_el,i)=>{
+    return new Node(
+      (i%(cw/blockSize)*(blockSize))+(blockSize/2),
+      (Math.floor(i/(cw/blockSize))*(blockSize))+(blockSize/2))
+  })   
+
+  startingNode = nodes[0]
+  startingNode.isStartingNode = true
+  endingNode = nodes[nodes.length-1]
+  endingNode.isEndingNode = true
   
+  rdfs(nodes,startingNode,blockSize)
+
+  draw()
 }
 
 export const TAU = 2*Math.PI
 
-let nodes:Node[] = []
 
 function draw(){
   console.log("started")
@@ -60,19 +81,11 @@ function draw(){
   ctx2.fillRect(0,0,cw,ch)
   ctx2.strokeRect(0,0,cw,ch)
   
-  nodes = Array((cw/blockSize)*(ch/blockSize)).fill(0).map((_el,i)=>{
-    return new Node(
-      (i%(cw/blockSize)*(blockSize))+(blockSize/2),
-      (Math.floor(i/(cw/blockSize))*(blockSize))+(blockSize/2),fill)
-  })   
-  var startingNode = nodes[0]
-  startingNode.isStartingNode = true
-  var endingNode = nodes[nodes.length-1]
-  endingNode.isEndingNode = true
+  
   
   nodes.forEach(el=>el.draw(ctx,blockSize))
   
-  let result = BFS(startingNode,nodes,blockSize,false) 
+  let result = BFS(startingNode,endingNode,nodes,blockSize,false) 
   
   if(result ){
     let n = endingNode
@@ -90,25 +103,24 @@ function draw(){
     nodes.forEach(el=>el.draw(ctx2,blockSize))
   }else{
     //console.log('retrying')
-    requestAnimationFrame(draw)
+    requestAnimationFrame(()=>setup(...parsedData))
   }
 }
-
 
 
 form.onsubmit= (e)=>{
   e.preventDefault()
   let data = (new FormData(<HTMLFormElement>e.target))
   //@ts-ignore
-  let parsedData:[number,number,number,number] = Array.from(data.entries()).map(el=>el[1])
+  parsedData = Array.from(data.entries()).map(el=>el[1])
   try{
 
     setup(...parsedData)
   }catch(err){
     if(err[0]) alert(err[1])
+    console.log(err)
     return
   }
-  draw()
 }
 
 (<HTMLButtonElement>document.querySelector('#d')).onclick = ()=> download(false);
