@@ -1,85 +1,88 @@
 
-export interface maze{
+interface mazeData{
+	nodes:Node[]
 	x:number
 	y:number
-	horiz:boolean[][]
-	verti:boolean[][]
+	blockSize:number
 }
 
-export function maze(x:number,y:number):maze {
-		let n=x*y-1;
-		if (n<0) throw new Error(`illegal maze dimensions (${x} x ${y} < 1)`);
-
-		let horiz =Array(x+1).fill(0).map(()=>[])
-		let verti =Array(x+1).fill(0).map(()=>[])
-		let here = [Math.floor(Math.random()*x), Math.floor(Math.random()*y)];
-		let path = [here];
-		let unvisited = Array(x+2).fill(0)
-		.map(()=>[])
-		.map((_el,j)=>
-			Array(y+1).fill(0)
-			.map((_e2,k)=>
-				(j>0 && j<x+1 && k>0 && (j != here[0]+1 || k != here[1]+1))
-			)
-		)
-
-		while (n>0) {
-			let potential = [
-				[here[0]+1, here[1]],
-				[here[0], here[1]+1],
-				[here[0]-1, here[1]],
-				[here[0], here[1]-1],
-			]
-
-			let neighbors = [];
-			potential.forEach((el)=>{
-				if (unvisited[el[0]+1][el[1]+1]) neighbors.push(el);
-			})
-
-			if (neighbors.length) {
-				n = n-1;
-				let next= neighbors[Math.floor(Math.random()*neighbors.length)];
-				unvisited[next[0]+1][next[1]+1]= false;
-				if (next[0] == here[0]){
-					horiz[next[0]][(next[1]+here[1]-1)/2]= true;
-				}else{
-					verti[(next[0]+here[0]-1)/2][next[1]]= true;
-				}
-				path.push(here = next);
-			} else 
-				here = path.pop();
-		}
-		return {x: x, y: y, horiz: horiz, verti: verti};
-}
-
-export function display(m:maze, writeTo:(str:string)=>any) {
-	let text = [];
-	for (let j= 0; j<m.x*2+1; j++) {
-		let line = [];
-		if (0 == j%2)
-			for (let k=0; k<m.y*4+1; k++)
-				if (0 == k%4) 
-					line[k] = '+';
-				else
-					if (j>0 && m.verti[j/2-1][Math.floor(k/4)])
-						line[k] = ' ';
-					else
-						line[k] = '-';
-		else
-			for (let k=0; k<m.y*4+1; k++)
-				if (0 == k%4)
-					if (k>0 && m.horiz[(j-1)/2][k/4-1])
-						line[k] = ' ';
-					else
-						line[k] = '|';
-				else
-					line[k] = ' ';
-		if (0 == j) line[1] = line[2] = line[3] = ' ';
-		if (m.x*2-1 == j) line[4*m.y]= ' ';
-		text.push(line.join('')+'\r\n');
+class Node{
+	x:number
+	y:number
+	wallsTo:Node[]
+	visited = false
+	constructor(x:number,y:number){
+		this.x = x
+		this.y = y
 	}
-	const OUTPUT = text.join('');
-	if (typeof writeTo === 'function')
-		writeTo(OUTPUT);
-	return OUTPUT
+
+	getTouchingNodes(nodes:Node[],blockSize:number){
+    return nodes.filter(n=>
+      (this != n) && 
+      (Math.hypot(this.x-n.x,this.y-n.y) == blockSize )
+    )
+  }
+
+	draw(ctx:CanvasRenderingContext2D,blockSize:number){
+    ctx.fillStyle ='black'
+
+    this.wallsTo.forEach((el)=>{
+      ctx.save()
+      ctx.translate(this.x,this.y)
+      ctx.rotate(Math.atan2(this.y-el.y,this.x-el.x)+ Math.PI)
+
+      ctx.beginPath()
+      ctx.moveTo(blockSize/2,blockSize/2)
+      ctx.lineTo(blockSize/2,-blockSize/2)
+      ctx.stroke()
+
+      ctx.restore()
+    })
+  }
+}
+
+
+export function maze(x:number,y:number):mazeData {
+	let blockSize = 20
+	x *= blockSize
+	y *= blockSize
+
+	let nodes = Array((x/blockSize)*(y/blockSize)).fill(0).map((_el,i)=>
+		new Node(
+			(i%(x/blockSize)*(blockSize))+(blockSize/2),
+			(Math.floor(i/(x/blockSize))*(blockSize))+(blockSize/2)
+		)
+	)  
+
+	nodes.forEach(n=>n.wallsTo = n.getTouchingNodes(nodes,blockSize))
+
+	let que = [nodes[0]]
+
+	while(que.length > 0){
+		let current = que.shift()
+		let unvisited = current
+		.getTouchingNodes(nodes,blockSize)
+		.filter(el=>!el.visited)
+		
+		if(unvisited.length >0){
+			que.push(current)
+			let chosen = unvisited[Math.floor(Math.random()*unvisited.length)];
+			current.wallsTo = current.wallsTo.filter((el)=>
+				el != chosen
+			)
+			chosen.wallsTo = chosen.wallsTo.filter((el)=>
+				el != current
+			)
+			chosen.visited = true
+			que.unshift(chosen)
+		} 
+	}
+	return {x:x,y:y,nodes:nodes,blockSize:blockSize}
+}
+
+export function display(c:HTMLCanvasElement,mazeData:mazeData){
+	let ctx = c.getContext('2d')
+	c.width = mazeData.x
+	c.height = mazeData.y
+	mazeData.nodes.forEach(el=>el.draw(ctx,mazeData.blockSize))
 }
