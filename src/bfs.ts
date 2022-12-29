@@ -1,6 +1,6 @@
 import Node from './Node'
 
-export default function BFS(start:Node,nodes:Node[],blockSize:number,traceRoutes?:boolean,ctx?:CanvasRenderingContext2D){
+export default function BFS(start:Node,end:Node,nodes:Node[],blockSize:number,traceRoutes?:boolean,ctx?:CanvasRenderingContext2D){
   nodes.forEach(el=>el.visited = false)
   let que: Node[] =[]
   start.visited = true
@@ -8,7 +8,7 @@ export default function BFS(start:Node,nodes:Node[],blockSize:number,traceRoutes
   que.push(start)
   while(que.length >0){
     let v = que.shift()
-    for(let child of v.getTouchingNodes(nodes,blockSize)){
+    for(let child of v.getViableNodes(nodes,blockSize)){
       
       if(!child.visited){
         child.generation = v.generation+1
@@ -23,7 +23,7 @@ export default function BFS(start:Node,nodes:Node[],blockSize:number,traceRoutes
         child.visited = true
         que.push(child)
       }
-      if(child.isEndingNode) return true
+      if(child == end) return true
     }
   }
   return false
