@@ -1,9 +1,6 @@
 
 import Node from "./Node"
 import BFS from "./bfs"
-
-
-import { maze,display } from "./maze"
 import rdfs from "./rdfs"
 
 let c = document.querySelectorAll("canvas")[0]
@@ -138,20 +135,6 @@ export function download(withSol:boolean){
   }
   a.click()
 }
-
-
-
-const X = 10,
-Y = 10;
-
-console.log(`Generating a maze of ${X} x ${Y}...`);
-
-let canvas = document.createElement('canvas')
-document.body.appendChild(canvas)
-let m = maze(X,Y)
-display(canvas,m)
-
-
 
 
 export{}
