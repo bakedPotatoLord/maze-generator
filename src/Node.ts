@@ -4,23 +4,17 @@ import { TAU } from "./main"
 export default class Node{
   x: number
   y: number
-  children:Node[]
+  children:Node[] = []
   parent:Node
-  isStartingNode:boolean
-  isEndingNode:boolean
-  isWall:boolean
-  visited:boolean
-  generation:number
+  isStartingNode = false
+  isEndingNode = false
+  visited = false
+  generation= 0
   wallsTo:Node[]
   constructor(x:number,y:number,parent?:Node){
     this.x =x
     this.y=y
-    this.children = []
     this.parent = parent
-    this.isEndingNode = false
-    this.isStartingNode = false
-    this.visited = false
-    this.generation = 0
   }
 
   topLine(ctx:CanvasRenderingContext2D,blockSize:number){
