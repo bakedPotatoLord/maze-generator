@@ -146,9 +146,11 @@ Y = 10;
 
 console.log(`Generating a maze of ${X} x ${Y}...`);
 
+let canvas = document.createElement('canvas')
+document.body.appendChild(canvas)
 let m = maze(X,Y)
-console.log(m)
-display(maze(X, Y), console.log);
+display(canvas,m)
+
 
 
 
