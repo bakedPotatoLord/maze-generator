@@ -1,5 +1,5 @@
 
-import { TAU, default as Node } from './Node';
+import { default as Node } from '../Node';
  
 
 let c = document.querySelectorAll('canvas')[0]
