@@ -6,7 +6,7 @@ const outDir = resolve(__dirname,'dist')
 
 export default defineConfig({
   root,
-  base:'/maze-solver/',
+  base:'/maze-generator/',
   build:{
     outDir,
     emptyOutDir:true,
