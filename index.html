@@ -5,30 +5,48 @@
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="/src/style.css">
-    <title>Vite + TS</title>
+    <title>maze solver</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300&display=swap" rel="stylesheet">
   </head>
   <body>
 
     <form >
 
-      <label for="Maze Width">Maze Width</label>
-      <input type="number" name="Maze Width" value="400">
-      <br>
-      <label for="Maze Heigth">Maze Height</label>
-      <input type="number" name="Maze Heigth" value="400">
-      <br>
-      <label for="blockSize">Block Size</label>
-      <input type="number" name="blockSize" value="40">
-      <br>
+      <table>
+        <tr>
+          <th><label for="Maze Width">Maze Width</label></th>
+          <th><input type="number" name="Maze Width" value="400"></th>
+        </tr>
+        <tr>
+          <th><label for="Maze Heigth">Maze Height</label></th>
+          <th><input type="number" name="Maze Heigth" value="400"></th>
+        </tr>
+        <tr>
+          <th><label for="blockSize">Block Size</label></th>
+          <th><input type="number" name="blockSize" value="40"></th>
+        </tr>
+        <tr>
+          <th><label for="Solution">Show Solution</label></th>
+          <th><input type="checkbox" name="solution" checked></th>
+        </tr>
+      </table>
+      
+
       <input type="submit" value="Generate Maze">
     </form>
     <br>
-    <button id="ds">Download Solution</button>
-    <button id="d">Download</button>
+    <div class="downloads">
+      <button id="ds">Download Solution</button>
+      <button id="d">Download Maze</button>
+    </div>
     <br>
-
-    <canvas></canvas>
-    <canvas></canvas>
+    <div class="canvases">
+      <canvas></canvas>
+      <canvas></canvas>
+    </div>
 
     <script type="module" src="/src/main.ts"></script>
   </body>
