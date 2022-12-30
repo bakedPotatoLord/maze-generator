@@ -37,14 +37,13 @@ export default class Node{
       ctx.fillStyle = "green"
     }else if(this.isEndingNode){
       ctx.fillStyle = "red"
-    }else{
-      ctx.fillStyle ='black'
     }
     if(this.isEndingNode || this.isStartingNode){
       ctx.beginPath()
       ctx.arc(this.x,this.y,blockSize/3,0,TAU)
       ctx.fill()
     }
+    ctx.strokeStyle ='rgb(0,0,0)'
 
     this.wallsTo.forEach((el)=>{
       ctx.save()
@@ -53,6 +52,10 @@ export default class Node{
 
       ctx.beginPath()
       ctx.moveTo(blockSize/2,blockSize/2)
+      ctx.lineTo(blockSize/2,-blockSize/2)
+      ctx.lineTo(blockSize/2,blockSize/2)
+      ctx.lineTo(blockSize/2,-blockSize/2)
+      ctx.lineTo(blockSize/2,blockSize/2)
       ctx.lineTo(blockSize/2,-blockSize/2)
       ctx.stroke()
 
