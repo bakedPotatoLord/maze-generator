@@ -24,20 +24,14 @@ let nodes:Node[] = []
 let startingNode:Node;
 let endingNode:Node;
 
-let parsedData:[number,number,number,number]
+let parsedData:[number,number,number]
 
-function setup(heigth:number,width:number,blockSizeP:number,fillP:number){
-  if(fillP < 0.7){
-    if(!window.confirm('difficultties under 0.7 can take VERY LONG to render. are you sure that you want to continue')){
-      throw [false]
-    }
-  } 
+function setup(heigth:number,width:number,blockSizeP:number){
   if( width % blockSizeP == 0 && width % blockSizeP == 0){
     
     cw = c.width =c2.width= width
     ch = c.height= c2.height =heigth
   
-    fill =parseFloat( fillP.toString())
     blockSize = blockSizeP
   }else{
     throw [true,new Error('Width and Heigth must be a multiple of blockSize')]
