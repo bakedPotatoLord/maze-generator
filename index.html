@@ -26,23 +26,19 @@
         </tr>
         <tr>
           <th><label for="blockSize">Block Size</label></th>
-          <th><input type="number" name="blockSize" value="40"></th>
-        </tr>
-        <tr>
-          <th><label for="Solution">Show Solution</label></th>
-          <th><input type="checkbox" name="solution" checked></th>
+          <th><input type="number" name="blockSize" value="40" min="5"></th>
         </tr>
       </table>
       
 
       <input type="submit" value="Generate Maze">
-    </form>
-    <br>
-    <div class="downloads">
-      <button id="ds">Download Solution</button>
+      <button id="showSolution">Show Solution</button>
       <button id="d">Download Maze</button>
-    </div>
+    </form>
+
     <br>
+    <br>
+
     <div class="canvases">
       <canvas></canvas>
       <canvas></canvas>
