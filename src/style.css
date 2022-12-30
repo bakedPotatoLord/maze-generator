@@ -58,7 +58,13 @@ form input{
 
 .btns button:hover,
 .btns input:hover{
-  background-color: blue;
+  background-color: rgb(38, 38, 38);
+}
+
+form a{
+  color: aliceblue;
+  text-decoration: none;
+  font-family: 'Open Sans', sans-serif;
 }
 
 
