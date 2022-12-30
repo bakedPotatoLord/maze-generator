@@ -1,7 +1,8 @@
 
-import { TAU } from "./main"
+export const TAU =  2* Math.PI
 
 export default class Node{
+  static TAU = Math.PI *2
   x: number
   y: number
   children:Node[] = []
@@ -20,6 +21,7 @@ export default class Node{
   topLine(ctx:CanvasRenderingContext2D,blockSize:number){
     console.log('topline called')
     ctx.strokeStyle = 'black'
+    
     ctx.beginPath()
     ctx.moveTo(-(blockSize/2),-(blockSize/2))
     ctx.lineTo(-(blockSize/2),(blockSize/2))
@@ -37,14 +39,13 @@ export default class Node{
       ctx.fillStyle = "green"
     }else if(this.isEndingNode){
       ctx.fillStyle = "red"
-    }else{
-      ctx.fillStyle ='black'
     }
     if(this.isEndingNode || this.isStartingNode){
       ctx.beginPath()
-      ctx.arc(this.x,this.y,blockSize/3,0,TAU)
+      ctx.arc(this.x,this.y,blockSize/3,0,Node.TAU)
       ctx.fill()
     }
+    ctx.strokeStyle ='rgb(0,0,0)'
 
     this.wallsTo.forEach((el)=>{
       ctx.save()
@@ -53,6 +54,10 @@ export default class Node{
 
       ctx.beginPath()
       ctx.moveTo(blockSize/2,blockSize/2)
+      ctx.lineTo(blockSize/2,-blockSize/2)
+      ctx.lineTo(blockSize/2,blockSize/2)
+      ctx.lineTo(blockSize/2,-blockSize/2)
+      ctx.lineTo(blockSize/2,blockSize/2)
       ctx.lineTo(blockSize/2,-blockSize/2)
       ctx.stroke()
 

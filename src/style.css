@@ -1,4 +1,6 @@
 
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@300&display=swap');
+
 body{
   margin: 0px;
   background-color: rgb(38, 38, 38);
@@ -25,6 +27,7 @@ table{
 
 table tr th{
   text-align: left;
+  font-family: 'Open Sans', sans-serif;
 }
 
 table tr th label{
@@ -35,17 +38,39 @@ table tr th input{
   background-color: grey;
 
 }
+form input{
+  font-family: 'Open Sans', sans-serif;
+}
 
-.downloads{
-  text-align: center;
+.btns button,
+.btns input{
+  border: none;
+  padding: 4px;
+  border-radius: 4px;
+  margin:5px;
+  background-color:rgb(35, 37, 41);
+  font-family: 'Open Sans', sans-serif;
+  color:aliceblue;
+  font-weight: bold;
+  transition:ease-in-out;
+  transition-duration: 250ms;
+}
+
+.btns button:hover,
+.btns input:hover{
+  background-color: rgb(38, 38, 38);
+}
+
+form a{
+  color: aliceblue;
+  text-decoration: none;
+  font-family: 'Open Sans', sans-serif;
 }
 
 .canvases{
   text-align: center;
 }
 
-
 canvas{
   border:none;
-
 }
