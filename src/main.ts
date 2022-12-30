@@ -25,7 +25,7 @@ let parsedData:[number,number,number]
 
 let mazeExists = false
 
-async function setup(heigth:number,width:number,blockSizeP:number){
+function setup(heigth:number,width:number,blockSizeP:number){
   if(heigth * width /blockSizeP > 16_000){
     if(!confirm('Making large mazes like this can take A REALLY LONG TIME.\r\n\r\nDo you want to continue?')){
       throw [false]
@@ -33,11 +33,15 @@ async function setup(heigth:number,width:number,blockSizeP:number){
       alert('Suit yourself, but dont say I didnt warn you.\r\n\r\nIf your browser says that it is unresponsive, chose "wait", as the is just thinking really hard, and not broken')
     }
   }
+
   if( width % blockSizeP == 0 && width % blockSizeP == 0){
-    cw = c.width = heigth
-    ch = c.height =width
-  
-    blockSize = blockSizeP
+    if(width >= blockSizeP && heigth >= blockSizeP){
+      cw = c.width = heigth
+      ch = c.height =width
+      blockSize = blockSizeP
+    }else{
+      throw [true,new Error('Width and Heigth must be greater than blockSize')]
+    }
 
   }else{
     throw [true,new Error('Width and Heigth must be a multiple of blockSize')]
