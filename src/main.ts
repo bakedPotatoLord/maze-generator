@@ -27,7 +27,7 @@ let parsedData:[number,number,number]
 let mazeExists = false
 
 function setup(heigth:number,width:number,blockSizeP:number){
-  if(heigth * width /blockSizeP > 16_000){
+  if(heigth * width > 500_000){
     if(!confirm('Making large mazes like this can take A REALLY LONG TIME.\r\n\r\nDo you want to continue?')){
       throw [false]
     }else{
