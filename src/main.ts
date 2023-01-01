@@ -3,7 +3,7 @@ import Node from "./Node"
 import BFS from "./bfs"
 import rdfs from "./rdfs"
 
-let c = document.querySelectorAll("canvas")[0]
+let c = document.querySelector("canvas")
 let ctx = c.getContext("2d")
 let form = document.forms[0]
 ctx.fillStyle = "black"
@@ -121,7 +121,7 @@ form.onsubmit= (e)=>{
     ctx.beginPath()
     ctx.moveTo(n.x,n.y)
     while(n.parent != undefined){
-      ctx.lineWidth = blockSize * (3/40)
+      ctx.lineWidth = 2
       ctx.strokeStyle = 'blue'
       ctx.lineTo(n.parent.x,n.parent.y)
       n = n.parent
