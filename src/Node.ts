@@ -1,6 +1,4 @@
-
-
-type nodeHash = string
+export type nodeHash = string
 
 export default class Node{
   static TAU = Math.PI *2
@@ -31,8 +29,6 @@ export default class Node{
     ctx.moveTo(-(blockSize/2),-(blockSize/2))
     ctx.lineTo(-(blockSize/2),(blockSize/2))
     ctx.stroke()
-
-
   }
 
   draw(ctx:CanvasRenderingContext2D,blockSize:number){
@@ -61,11 +57,8 @@ export default class Node{
       ctx.lineTo(blockSize/2,blockSize/2)
       ctx.lineTo(blockSize/2,-blockSize/2)
       ctx.stroke()
-
       ctx.restore()
-
     })
-
   }
 
   addChildren=(...node:Node[])=>this.children.push(...node)
