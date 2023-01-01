@@ -1,48 +1,42 @@
 import { makeNodeMap } from '../helpers';
 import Node from '../Node';
 
-let c = document.querySelector('canvas')
-let ctx = c.getContext('2d')
+const c = document.querySelector('canvas')
+const ctx = c.getContext('2d')
 
+// create canvas vars
 let cw = c.width = 200
 let ch = c.height = 200
-
 let blockSize = 20
 
+// initialize helper variables
 let form = document.forms[0]
-
 let nodes:Map<string,Node>
-
 let startingNode:Node
 let endingNode:Node
-
 let que:Node[]
-
 let drawingCompleted = true
 
 function setup(){
-  
   nodes = makeNodeMap(cw,ch,blockSize)
 
   nodes.forEach(n=>{
     n.visited = false
     n.wallsTo = n.getTouchingNodes(nodes,blockSize)
   })
+  //get starting node
   startingNode = Array.from(nodes.entries())[0][1]
   startingNode.isStartingNode = true
-  
+  //get ending node
   endingNode = Array.from(nodes.entries())
   .slice(-1)[0][1]
-  
   endingNode.isEndingNode = true
+  //setup que
   startingNode.visited = true
   que = [startingNode]
 }
 
-
-
 function draw(){
-
   let current = que.shift()
   let unvisited = current
   .getTouchingNodes(nodes,blockSize)
