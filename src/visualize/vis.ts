@@ -70,7 +70,7 @@ function draw(){
     chosen.visited = true
     que.unshift(chosen)
     
-    ctx.clearRect(0,0,400,400)
+    ctx.clearRect(0,0,cw,ch)
 
     ctx.strokeStyle = 'red'
     ctx.lineWidth= 4
