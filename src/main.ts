@@ -74,9 +74,9 @@ function draw(){
   ctx.strokeRect(0,0,cw,ch)
   
   nodes.forEach(el=>el.draw(ctx,blockSize))
-  /*
+
   BFS(startingNode,endingNode,nodes,blockSize,false) 
-  */
+
   mazeExists = true
 }
 
