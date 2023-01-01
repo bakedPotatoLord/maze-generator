@@ -10,7 +10,7 @@ let ctx = c.getContext('2d')
 c.width = 400
 c.height = 400
 */
-export default function rdfs(nodes:Node[],startingNode:Node,blockSize:number){
+export default function rdfs(nodes:Map<string,Node>,startingNode:Node,blockSize:number){
   nodes.forEach(n=>{
     n.visited = false
     n.wallsTo = n.getTouchingNodes(nodes,blockSize)

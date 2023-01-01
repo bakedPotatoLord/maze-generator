@@ -2,6 +2,7 @@
 import Node from "./Node"
 import BFS from "./bfs"
 import rdfs from "./rdfs"
+import { makeNodeMap} from "./helpers"
 
 let c = document.querySelector("canvas")
 let ctx = c.getContext("2d")
@@ -17,7 +18,7 @@ export let ch:number
 export let fill:number
 export let blockSize:number
 
-let nodes:Node[] = []
+let nodes:Map<string,Node>
 let startingNode:Node;
 let endingNode:Node;
 
@@ -47,23 +48,19 @@ function setup(heigth:number,width:number,blockSizeP:number){
     throw [true,new Error('Width and Heigth must be a multiple of blockSize')]
   }
 
-  nodes = Array((cw/blockSize)*(ch/blockSize)).fill(0).map((_el,i)=>{
-    return new Node(
-      (i%(cw/blockSize)*(blockSize))+(blockSize/2),
-      (Math.floor(i/(cw/blockSize))*(blockSize))+(blockSize/2))
-  })   
+  nodes = makeNodeMap(cw,ch,blockSize) 
 
-  startingNode = nodes[0]
+  startingNode = Array.from(nodes.entries())[0][1]
   startingNode.isStartingNode = true
-  endingNode = nodes[nodes.length-1]
-  endingNode.isEndingNode = true
   
+  endingNode = Array.from(nodes.entries())
+  .slice(-1)[0][1]
+  endingNode.isEndingNode = true
   rdfs(nodes,startingNode,blockSize)
 
   draw()
 }
 
-export const TAU = 2*Math.PI
 
 
 function draw(){
@@ -77,7 +74,7 @@ function draw(){
   ctx.strokeRect(0,0,cw,ch)
   
   nodes.forEach(el=>el.draw(ctx,blockSize))
-  
+
   BFS(startingNode,endingNode,nodes,blockSize,false) 
 
   mazeExists = true

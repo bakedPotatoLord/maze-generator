@@ -1,5 +1,6 @@
 
-export const TAU =  2* Math.PI
+
+type nodeHash = string
 
 export default class Node{
   static TAU = Math.PI *2
@@ -69,14 +70,16 @@ export default class Node{
 
   addChildren=(...node:Node[])=>this.children.push(...node)
 
-  getTouchingNodes(nodes:Node[],blockSize:number){
-    return nodes.filter(n=>
-      (this != n) && 
-      (Math.hypot(this.x-n.x,this.y-n.y) == blockSize )
-    )
+  getTouchingNodes(nodes:Map<nodeHash,Node>,blockSize:number){
+    return [
+      nodes.get(this.hashFrom(this.x+blockSize,this.y)),
+      nodes.get(this.hashFrom(this.x,this.y+blockSize)),
+      nodes.get(this.hashFrom(this.x-blockSize,this.y)),
+      nodes.get(this.hashFrom(this.x,this.y-blockSize)),
+    ].filter(el=> el ?? false)
   }
 
-  getViableNodes(nodes:Node[],blockSize:number){
+  getViableNodes(nodes:Map<nodeHash,Node>,blockSize:number){
     let tNodes = this.getTouchingNodes(nodes,blockSize)
     return tNodes
     .filter(
@@ -91,4 +94,8 @@ export default class Node{
     ctx.lineTo(node.x,node.y)
     ctx.stroke()
   }
+
+  toHash = ():nodeHash=> this.x+','+this.y
+
+  hashFrom = (x:number,y:number)=>x+','+y
 }
