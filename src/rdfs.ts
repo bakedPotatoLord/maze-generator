@@ -1,52 +1,39 @@
 import type Node from './Node';
-
-//randomized depth first search
-
-// Josiah Hamm / bakedPotatoLord
-/*
-let c = document.querySelectorAll('canvas')[2]
-let ctx = c.getContext('2d')
-
-c.width = 400
-c.height = 400
-*/
+/**
+ * @description randomized depth first search
+ * @author Josiah Hamm / @bakedPotatoLord
+ * @license MIT
+ */
 export default function rdfs(nodes:Map<string,Node>,startingNode:Node,blockSize:number){
+  // reset all nodes to default state
   nodes.forEach(n=>{
     n.visited = false
     n.wallsTo = n.getTouchingNodes(nodes,blockSize)
   })
-
-
-  startingNode.isStartingNode = true
+  //initialize algorithm
   startingNode.visited = true
   let que = [startingNode]
-
   while(que.length > 0){
+    //pick from bottom of stack
     let current = que.shift()
+    // 
     let unvisited = current
-    .getTouchingNodes(nodes,blockSize)
-    .filter((el)=>!el.visited)
-    let chosen:Node
-    
-    if(unvisited.length >0){
+      .getTouchingNodes(nodes,blockSize)
+      .filter((el)=>!el.visited)
+    // only add nodes to stack if they can grow
+    if(unvisited.length){ //type coersion go brrr
+      // add current to top of stack
       que.push(current)
-      chosen = unvisited[Math.floor(Math.random()*unvisited.length)];
-      current.wallsTo = current.wallsTo.filter((el)=>
-        el != chosen
-      )
-      chosen.wallsTo = chosen.wallsTo.filter((el)=>
-        el != current
-      )
+      // chose random Node from unvisited
+      let chosen = unvisited[Math.floor(Math.random()*unvisited.length)];
+      // remove walls
+      current.wallsTo = current.wallsTo.filter(el=>el != chosen)
+      chosen.wallsTo = chosen.wallsTo.filter(el=>el!=current)
+      // im not explaining this line
       chosen.visited = true
+      // add chosen to the bottom of stack (This is the DEPTH FIRST part)
       que.unshift(chosen)
-
-      // ctx.clearRect(0,0,400,400)
-      // nodes.forEach(n=>n.draw(ctx,40))
-      // chosen.isEndingNode = true
-      // chosen.draw(ctx,40)
-      // chosen.isEndingNode = false
     } 
-    
   }
   return nodes
 }
