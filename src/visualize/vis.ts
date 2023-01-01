@@ -18,7 +18,7 @@ let endingNode:Node
 
 let que:Node[]
 
-
+let drawingCompleted = true
 
 function setup(){
   
@@ -76,18 +76,20 @@ function draw(){
 
   if(que.length > 0){
     requestAnimationFrame(draw)
+  }else{
+    drawingCompleted = true
   }
 }
 
 form.onsubmit =e=>{
   e.preventDefault()
-  
-
-  setup()
-
-  draw()
-
-  console.log()
+  if(drawingCompleted){
+    setup()
+    draw()
+    drawingCompleted =false
+  }else{
+    alert('Wait for visualization to complete before starting a new one. To abort drawing, reload the page.')
+  }
 }
 
 document.querySelector('input')
