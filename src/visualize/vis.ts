@@ -1,4 +1,5 @@
-import Node from '../MapNode';
+import { makeNodeMap } from '../helpers';
+import Node from '../Node';
 
 let c = document.querySelector('canvas')
 let ctx = c.getContext('2d')
@@ -21,17 +22,7 @@ let que:Node[]
 
 function setup(){
   
-  nodes = new Map(
-    Array((cw/blockSize)*(ch/blockSize)).fill(0).map((_el,i)=>{
-      return new Node(
-        (i%(cw/blockSize)*(blockSize))+(blockSize/2),
-        (Math.floor(i/(cw/blockSize))*(blockSize))+(blockSize/2)
-      )
-    })
-    .map(el=>[el.toHash(),el])
-  )
-  
-  
+  nodes = makeNodeMap(cw,ch,blockSize)
 
   nodes.forEach(n=>{
     n.visited = false
