@@ -1,39 +1,48 @@
+import Node from '../Node';
 
-import { default as Node } from '../Node';
- 
-
-let c = document.querySelectorAll('canvas')[0]
+let c = document.querySelector('canvas')
 let ctx = c.getContext('2d')
 
-const cw = c.width = 400
-const ch = c.height = 400
+let cw = c.width = 200
+let ch = c.height = 200
 
 let blockSize = 20
 
+let form = document.forms[0]
 
-let nodes = Array((cw/blockSize)*(ch/blockSize)).fill(0).map((_el,i)=>{
-  return new Node(
-    (i%(cw/blockSize)*(blockSize))+(blockSize/2),
-    (Math.floor(i/(cw/blockSize))*(blockSize))+(blockSize/2))
-})   
-//.filter((el)=>Math.hypot(el.x-200,el.y-200)< 200)
+let nodes:Node[] = []
 
-nodes.forEach(n=>{
-  n.visited = false
-  n.wallsTo = n.getTouchingNodes(nodes,blockSize)
-})
-let startingNode = nodes[0]
-startingNode.isStartingNode = true
+let startingNode:Node
+let endingNode:Node
 
-let endingNode = nodes.slice(-1)[0]
-endingNode.isEndingNode = true
+let que:Node[]
 
-startingNode.visited = true
-let que = [startingNode]
+function setup(){
+  
+  nodes = Array((cw/blockSize)*(ch/blockSize)).fill(0).map((_el,i)=>{
+    return new Node(
+      (i%(cw/blockSize)*(blockSize))+(blockSize/2),
+      (Math.floor(i/(cw/blockSize))*(blockSize))+(blockSize/2)
+    )
+  })
 
-draw()
+  nodes.forEach(n=>{
+    n.visited = false
+    n.wallsTo = n.getTouchingNodes(nodes,blockSize)
+  })
+  startingNode = nodes[0]
+  startingNode.isStartingNode = true
+  
+  endingNode = nodes.slice(-1)[0]
+  endingNode.isEndingNode = true
+  startingNode.visited = true
+  que = [startingNode]
+}
+
+
 
 function draw(){
+
   let current = que.shift()
   let unvisited = current
   .getTouchingNodes(nodes,blockSize)
@@ -70,9 +79,20 @@ function draw(){
   }
 }
 
-
-
-
+form.onsubmit =e=>{
+  e.preventDefault()
   
 
-export {}
+  setup()
+
+  draw()
+
+  console.log()
+}
+
+document.querySelector('input')
+.onchange = ()=>{
+  let data = new FormData(form)
+  cw = c.width = parseInt(data.get('size').toString())*blockSize
+  ch = c.height = parseInt(data.get('size').toString())*blockSize
+}

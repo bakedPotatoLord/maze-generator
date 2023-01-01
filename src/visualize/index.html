@@ -10,12 +10,21 @@
       border:2px solid black
     }
 
-
+    form{
+      margin-bottom: 10px;
+      margin-top: 10px;
+    }
   </style>
 </head>
 <body>
   <a href="/">back home</a>
   <br>
+  <form>
+    <label for="size">Maze Size</label>
+    <input type="number" name="size" value="10" min="5" max ="100">
+
+    <input type="submit" value="Generate Maze">
+  </form>
   <canvas></canvas>
   <script type="module" src="vis.ts"></script>
 </body>
