@@ -6,6 +6,14 @@ body{
   background-color: rgb(38, 38, 38);
 }
 
+p,
+input,
+label,
+button,
+a{
+  font-family: 'Open Sans', sans-serif;
+}
+
 
 form{
   background-color: rgb(81, 73, 83);
@@ -27,7 +35,6 @@ table{
 
 table tr th{
   text-align: left;
-  font-family: 'Open Sans', sans-serif;
 }
 
 table tr th label{
@@ -37,11 +44,7 @@ table tr th label{
 table tr th input{
   background-color: grey;
   color:whitesmoke;
-  font-family: 'Open Sans', sans-serif;
   font-weight: bold;
-}
-form input{
-  font-family: 'Open Sans', sans-serif;
 }
 
 .btns button,
@@ -51,7 +54,6 @@ form input{
   border-radius: 4px;
   margin:5px;
   background-color:rgb(35, 37, 41);
-  font-family: 'Open Sans', sans-serif;
   color:aliceblue;
   font-weight: bold;
   transition:ease-in-out;
@@ -66,7 +68,16 @@ form input{
 form a{
   color: aliceblue;
   text-decoration: none;
-  font-family: 'Open Sans', sans-serif;
+
+}
+
+.stateContainer{
+  text-align: center;
+}
+
+#state{
+  color:wheat;
+  font-size: small;
 }
 
 .canvases{

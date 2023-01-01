@@ -6,6 +6,7 @@ import { getEndingNode, getStartingNode, makeNodeMap} from "./helpers"
 let c = document.querySelector("canvas")
 let ctx = c.getContext("2d")
 let form = document.forms[0]
+let state = <HTMLParagraphElement>document.querySelector('#state')
 ctx.fillStyle = "black"
 
 // declare canvas vars
@@ -18,13 +19,11 @@ let nodes:Map<string,Node>
 let startingNode:Node;
 let endingNode:Node;
 
-
-
 let mazeExists = false
 
 function setup(heigth:number,width:number,blockSizeP:number){
   //form validation
-  if(heigth * width > 500_000){
+  if(heigth * width > 5_000_000){
     if(!confirm('Making large mazes like this can take A REALLY LONG TIME.\r\n\r\nDo you want to continue?')){
       throw [false]
     }else{
@@ -53,7 +52,8 @@ function setup(heigth:number,width:number,blockSizeP:number){
   endingNode.isEndingNode = true
   rdfs(nodes,startingNode,blockSize)
 
-  draw()
+  
+  requestAnimationFrame( draw )
 }
 
 function draw(){
@@ -73,6 +73,8 @@ function draw(){
   //use breadth-first search because depth first will find "a solutoion", but not "the" solutoin  
   BFS(startingNode,endingNode,nodes,blockSize,false) 
   mazeExists = true
+
+  state.innerHTML = 'Generation Complete'
 }
 
 
@@ -80,18 +82,21 @@ form.onsubmit= (e)=>{
   e.preventDefault()
   let data = (new FormData(<HTMLFormElement>e.target))
   //@ts-ignore
+  state.innerHTML = 'generating ...'
+  requestAnimationFrame(()=>{
 
-  try{
-    setup(
-      parseFloat(data.get('width').toString()),
-      parseFloat(data.get('heigth').toString()),
-      parseFloat(data.get('blockSize').toString()),
-    )
-  }catch(err){
-    if(err[0]) alert(err[1])
-    console.log(err)
-    return
-  }
+      try{
+        setup(
+          parseFloat(data.get('width').toString()),
+          parseFloat(data.get('heigth').toString()),
+          parseFloat(data.get('blockSize').toString()),
+        )
+      }catch(err){
+        if(err[0]) alert(err[1])
+        console.log(err)
+        return
+      }
+  })
 }
 
 (<HTMLButtonElement>document.querySelector('#d'))
