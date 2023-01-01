@@ -1,7 +1,7 @@
 import Node from "./Node"
-import BFS from "./bfs"
 import rdfs from "./rdfs"
 import { getEndingNode, getStartingNode, makeNodeMap} from "./helpers"
+import bfs from "./bfs"
 
 let c = document.querySelector("canvas")
 let ctx = c.getContext("2d")
@@ -54,7 +54,7 @@ function draw(){
   //draw all node
   nodes.forEach(el=>el.draw(ctx,blockSize))
   //use breadth-first search because depth first will find "a" solutoion, but not "the" solutoin  
-  BFS(startingNode,endingNode,nodes,blockSize,false) 
+  bfs(startingNode,endingNode,nodes,blockSize,false) 
 
   mazeExists = true
   state.innerHTML = 'Generation Complete'

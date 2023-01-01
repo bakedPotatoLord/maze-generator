@@ -1,6 +1,6 @@
 import Node from './Node'
 
-export default function BFS(start:Node,end:Node,nodes:Map<string,Node>,blockSize:number,traceRoutes?:boolean,ctx?:CanvasRenderingContext2D){
+export default function bfs(start:Node,end:Node,nodes:Map<string,Node>,blockSize:number,traceRoutes?:boolean,ctx?:CanvasRenderingContext2D){
   nodes.forEach(el=>el.visited = false)
   let que: Node[] =[]
   start.visited = true
