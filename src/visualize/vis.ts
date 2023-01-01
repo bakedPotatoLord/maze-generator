@@ -1,4 +1,4 @@
-import { makeNodeMap } from '../helpers';
+import { getEndingNode, getStartingNode, makeNodeMap } from '../helpers';
 import Node from '../Node';
 
 const c = document.querySelector('canvas')
@@ -25,12 +25,11 @@ function setup(){
     n.wallsTo = n.getTouchingNodes(nodes,blockSize)
   })
   //get starting node
-  startingNode = Array.from(nodes.entries())[0][1]
+  startingNode = getStartingNode(nodes)
   startingNode.isStartingNode = true
   //get ending node
-  endingNode = Array.from(nodes.entries())
-  .slice(-1)[0][1]
-  endingNode.isEndingNode = true
+  endingNode = getEndingNode(nodes)
+  startingNode.isEndingNode = true
   //setup que
   startingNode.visited = true
   que = [startingNode]
@@ -41,11 +40,10 @@ function draw(){
   let unvisited = current
   .getTouchingNodes(nodes,blockSize)
   .filter((el)=>!el.visited)
-  let chosen:Node
   
   if(unvisited.length >0){
     que.push(current)
-    chosen = unvisited[Math.floor(Math.random()*unvisited.length)];
+    let chosen = unvisited[Math.floor(Math.random()*unvisited.length)];
     current.wallsTo = current.wallsTo.filter((el)=>
       el != chosen
     )
