@@ -3,6 +3,7 @@ import Node from '../Node';
 
 const c = document.querySelector('canvas')
 const ctx = c.getContext('2d')
+const state = document.querySelector('#state')
 
 // create canvas vars
 let cw = c.width = 200
@@ -70,18 +71,22 @@ function draw(){
     requestAnimationFrame(draw)
   }else{
     drawingCompleted = true
+    state.innerHTML = 'Generation Complete'
   }
 }
 
 form.onsubmit =e=>{
   e.preventDefault()
-  if(drawingCompleted){
-    setup()
-    draw()
-    drawingCompleted =false
-  }else{
-    alert('Wait for visualization to complete before starting a new one. To abort drawing, reload the page.')
-  }
+  state.innerHTML = 'Generating ...'
+  requestAnimationFrame(()=>{
+    if(drawingCompleted){
+      setup()
+      draw()
+      drawingCompleted =false
+    }else{
+      alert('Wait for visualization to complete before starting a new one. To abort drawing, reload the page.')
+    }
+  })
 }
 
 document.querySelector('input')
