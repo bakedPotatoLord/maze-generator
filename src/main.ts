@@ -2,7 +2,7 @@
 import Node from "./Node"
 import BFS from "./bfs"
 import rdfs from "./rdfs"
-import { makeNodeMap, TAU} from "./helpers"
+import { makeNodeMap} from "./helpers"
 
 let c = document.querySelector("canvas")
 let ctx = c.getContext("2d")
@@ -56,8 +56,7 @@ function setup(heigth:number,width:number,blockSizeP:number){
   endingNode = Array.from(nodes.entries())
   .slice(-1)[0][1]
   endingNode.isEndingNode = true
-  let ar = Array.from(nodes.entries()).map((el)=>el[1])
-  rdfs(ar,startingNode,blockSize)
+  rdfs(nodes,startingNode,blockSize)
 
   draw()
 }
@@ -75,9 +74,9 @@ function draw(){
   ctx.strokeRect(0,0,cw,ch)
   
   nodes.forEach(el=>el.draw(ctx,blockSize))
-  
+  /*
   BFS(startingNode,endingNode,nodes,blockSize,false) 
-
+  */
   mazeExists = true
 }
 
