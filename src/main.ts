@@ -16,51 +16,34 @@ let blockSize:number
 
 // declare graph algorithm vars
 let nodes:Map<string,Node>
-let startingNode:Node;
-let endingNode:Node;
+let startingNode:Node
+let endingNode:Node
 
+//extra vars
 let mazeExists = false
 
 function setup(heigth:number,width:number,blockSizeP:number){
   //form validation
-  if(heigth * width > 5_000_000){
-    if(!confirm('Making large mazes like this can take A REALLY LONG TIME.\r\n\r\nDo you want to continue?')){
-      throw [false]
-    }else{
-      alert('Suit yourself, but dont say I didnt warn you.\r\n\r\nIf your browser says that it is unresponsive, chose "wait", as the is just thinking really hard, and not broken')
-    }
-  }
-  //more form validation
-  if( width % blockSizeP == 0 && width % blockSizeP == 0){
-    if(width >= blockSizeP && heigth >= blockSizeP){
-      cw = c.width = heigth
-      ch = c.height =width
-      blockSize = blockSizeP
-    }else{
-      throw [true,new Error('Width and Heigth must be greater than blockSize')]
-    }
-  }else{
+  if(!( width % blockSizeP == 0 || width % blockSizeP == 0))
     throw [true,new Error('Width and Heigth must be a multiple of blockSize')]
-  }
-
+  //set up
+  cw = c.width = heigth
+  ch = c.height =width
+  blockSize = blockSizeP
   nodes = makeNodeMap(cw,ch,blockSize) 
-
+  //create start and end nodes
   startingNode = getStartingNode(nodes)
   startingNode.isStartingNode = true
-  
   endingNode = getEndingNode(nodes)
   endingNode.isEndingNode = true
+  //do the grunt work
   rdfs(nodes,startingNode,blockSize)
-
-  
+  //draw it
   requestAnimationFrame( draw )
 }
 
 function draw(){
-  console.log("started")
-
   ctx.fillStyle  = 'white'
-
   ctx.clearRect(0,0,cw,ch)
   ctx.strokeStyle = 'black'
   ctx.lineWidth = 2
@@ -68,37 +51,35 @@ function draw(){
   ctx.beginPath
   ctx.rect(1,1,cw-1,ch-1)
   ctx.stroke()
-  
+  //draw all node
   nodes.forEach(el=>el.draw(ctx,blockSize))
-  //use breadth-first search because depth first will find "a solutoion", but not "the" solutoin  
+  //use breadth-first search because depth first will find "a" solutoion, but not "the" solutoin  
   BFS(startingNode,endingNode,nodes,blockSize,false) 
-  mazeExists = true
 
+  mazeExists = true
   state.innerHTML = 'Generation Complete'
 }
 
-
+//form submission button
 form.onsubmit= (e)=>{
   e.preventDefault()
   let data = (new FormData(<HTMLFormElement>e.target))
-  //@ts-ignore
   state.innerHTML = 'generating ...'
   requestAnimationFrame(()=>{
-
-      try{
-        setup(
-          parseFloat(data.get('width').toString()),
-          parseFloat(data.get('heigth').toString()),
-          parseFloat(data.get('blockSize').toString()),
-        )
-      }catch(err){
-        if(err[0]) alert(err[1])
-        console.log(err)
-        return
-      }
+    try{
+      setup(
+        parseFloat(data.get('width').toString()),
+        parseFloat(data.get('heigth').toString()),
+        parseFloat(data.get('blockSize').toString()),
+      )
+    }catch(err){
+      if(err[0]) alert(err[1])
+      console.log(err)
+      return
+    }
   })
 }
-
+//download button
 (<HTMLButtonElement>document.querySelector('#d'))
 .onclick = (e)=>{
   e.preventDefault()
@@ -112,7 +93,7 @@ form.onsubmit= (e)=>{
     alert('you need to generate your maze first bozo')
   }
 }
-
+//show solution button
 (<HTMLButtonElement>document.querySelector('#showSolution'))
 .onclick = (e)=>{
   e.preventDefault()
