@@ -36,7 +36,9 @@ table tr th label{
 
 table tr th input{
   background-color: grey;
-
+  color:whitesmoke;
+  font-family: 'Open Sans', sans-serif;
+  font-weight: bold;
 }
 form input{
   font-family: 'Open Sans', sans-serif;
