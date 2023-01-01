@@ -14,8 +14,7 @@ let blockSize = 20
 let form = document.forms[0]
 let nodes:Map<string,Node>
 let startingNode:Node
-let endingNode:Node
-let que:Node[]
+let que:Node[] = []
 let drawingCompleted = true
 
 function setup(){
@@ -29,8 +28,7 @@ function setup(){
   startingNode = getStartingNode(nodes)
   startingNode.isStartingNode = true
   //get ending node
-  endingNode = getEndingNode(nodes)
-  startingNode.isEndingNode = true
+  getEndingNode(nodes).isEndingNode = true
   //setup que
   startingNode.visited = true
   que = [startingNode]
@@ -78,15 +76,15 @@ function draw(){
 form.onsubmit =e=>{
   e.preventDefault()
   state.innerHTML = 'Generating ...'
-  requestAnimationFrame(()=>{
-    if(drawingCompleted){
-      setup()
-      draw()
-      drawingCompleted =false
-    }else{
-      alert('Wait for visualization to complete before starting a new one. To abort drawing, reload the page.')
-    }
-  })
+
+  if(drawingCompleted){
+    setup()
+    draw()
+    drawingCompleted =false
+  }else{
+    alert('Wait for visualization to complete before starting a new one. To abort drawing, reload the page.')
+  }
+
 }
 
 document.querySelector('input')
