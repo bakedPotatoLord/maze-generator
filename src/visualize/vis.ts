@@ -1,4 +1,4 @@
-import Node from '../Node';
+import Node from '../MapNode';
 
 let c = document.querySelector('canvas')
 let ctx = c.getContext('2d')
@@ -10,30 +10,39 @@ let blockSize = 20
 
 let form = document.forms[0]
 
-let nodes:Node[] = []
+let nodes:Map<string,Node>
 
 let startingNode:Node
 let endingNode:Node
 
 let que:Node[]
 
+
+
 function setup(){
   
-  nodes = Array((cw/blockSize)*(ch/blockSize)).fill(0).map((_el,i)=>{
-    return new Node(
-      (i%(cw/blockSize)*(blockSize))+(blockSize/2),
-      (Math.floor(i/(cw/blockSize))*(blockSize))+(blockSize/2)
-    )
-  })
+  nodes = new Map(
+    Array((cw/blockSize)*(ch/blockSize)).fill(0).map((_el,i)=>{
+      return new Node(
+        (i%(cw/blockSize)*(blockSize))+(blockSize/2),
+        (Math.floor(i/(cw/blockSize))*(blockSize))+(blockSize/2)
+      )
+    })
+    .map(el=>[el.toHash(),el])
+  )
+  
+  
 
   nodes.forEach(n=>{
     n.visited = false
     n.wallsTo = n.getTouchingNodes(nodes,blockSize)
   })
-  startingNode = nodes[0]
+  startingNode = Array.from(nodes.entries())[0][1]
   startingNode.isStartingNode = true
   
-  endingNode = nodes.slice(-1)[0]
+  endingNode = Array.from(nodes.entries())
+  .slice(-1)[0][1]
+  
   endingNode.isEndingNode = true
   startingNode.visited = true
   que = [startingNode]
