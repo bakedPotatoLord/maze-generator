@@ -69,16 +69,6 @@ form a{
   font-family: 'Open Sans', sans-serif;
 }
 
-.main{
-  display: flex;
-  justify-content: center;
-  
-}
-
-.main div{
-  -ms-flex-align: center;
-}
-
 .canvases{
   text-align: center;
 }
