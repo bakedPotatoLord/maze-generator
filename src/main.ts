@@ -70,8 +70,11 @@ function draw(){
 
   ctx.clearRect(0,0,cw,ch)
   ctx.strokeStyle = 'black'
+  ctx.lineWidth = 2
   ctx.fillRect(0,0,cw,ch)
-  ctx.strokeRect(0,0,cw,ch)
+  ctx.beginPath
+  ctx.rect(1,1,cw-1,ch-1)
+  ctx.stroke()
   
   nodes.forEach(el=>el.draw(ctx,blockSize))
 
