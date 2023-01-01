@@ -1,8 +1,5 @@
-
-
 export const TAU = 2* Math.PI
 import Node, { nodeHash } from "./Node"
-
 
 export function makeNodeMap(cw:number,ch:number,blockSize:number){
   return new Map(
@@ -19,7 +16,6 @@ export function makeNodeMap(cw:number,ch:number,blockSize:number){
 export const getStartingNode = (map:Map<string,Node>)=>
   (<[nodeHash,Node]>map.entries().next().value)[1]
 
-
 export const getEndingNode = (map:Map<string,Node>) =>
   Array.from(map.entries())
-  .slice(-1)[0][1]
+  .pop()[1]
