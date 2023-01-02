@@ -28,14 +28,16 @@
         </tr>
       </table>
       
-      <div class="btns">
+      <div class="options">
+        <a href="./visualize/">visualize maze generation</a>
         <input type="submit" value="Generate Maze">
-        <button id="showSolution">Show Solution</button>
-        <button id="d">Download Maze</button>
       </div>
 
-      <a href="./visualize/">visualize maze generation</a>
     </form>
+    <div class="mazeOptions" hidden>
+      <button id="showSolution">Show Solution</button>
+        <button id="d">Download Maze</button>
+    </div>
     <div class="stateContainer">
       <p id="state"></p>
     </div>

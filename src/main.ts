@@ -7,6 +7,7 @@ let c = document.querySelector("canvas")
 let ctx = c.getContext("2d")
 let form = document.forms[0]
 let state = <HTMLParagraphElement>document.querySelector('#state')
+let mazeOptions = <HTMLDivElement>document.querySelector('.mazeOptions')
 ctx.fillStyle = "black"
 
 // declare canvas vars
@@ -57,7 +58,8 @@ function draw(){
   bfs(startingNode,endingNode,nodes,blockSize,false) 
 
   mazeExists = true
-  state.innerHTML = 'Generation Complete'
+  state.innerHTML = ''
+  mazeOptions.hidden = false
 }
 
 //form submission button
