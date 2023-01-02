@@ -62,8 +62,8 @@ input[type=submit],
 
 
 form a{
-  color: aliceblue;
-  text-decoration: none;
+  color: wheat;
+  text-decoration: underline;
 
 }
 
