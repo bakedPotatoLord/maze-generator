@@ -8,6 +8,7 @@ let ctx = c.getContext("2d")
 let form = document.forms[0]
 let state = <HTMLParagraphElement>document.querySelector('#state')
 let mazeOptions = <HTMLDivElement>document.querySelector('.mazeOptions')
+
 ctx.fillStyle = "black"
 
 // declare canvas vars
@@ -23,13 +24,13 @@ let endingNode:Node
 //extra vars
 let mazeExists = false
 
-function setup(heigth:number,width:number,blockSizeP:number){
+function setup(width:number,heigth:number,blockSizeP:number){
   //form validation
   if(!( width % blockSizeP == 0 || width % blockSizeP == 0))
     throw [true,new Error('Width and Heigth must be a multiple of blockSize')]
   //set up
-  cw = c.width = heigth
-  ch = c.height =width
+  ch = c.height = heigth
+  cw = c.width = width
   blockSize = blockSizeP
   nodes = makeNodeMap(cw,ch,blockSize) 
   //create start and end nodes
@@ -96,21 +97,31 @@ form.onsubmit= (e)=>{
   }
 }
 //show solution button
-(<HTMLButtonElement>document.querySelector('#showSolution'))
+(<HTMLInputElement>document.querySelector('#showSolution'))
 .onclick = (e)=>{
-  e.preventDefault()
-  if(mazeExists){
-    let n = endingNode
-    ctx.beginPath()
-    ctx.moveTo(n.x,n.y)
-    while(n.parent != undefined){
-      ctx.lineWidth = 2
-      ctx.strokeStyle = 'blue'
-      ctx.lineTo(n.parent.x,n.parent.y)
-      n = n.parent
-    }
-    ctx.stroke()
-  }else{
+  //data validation
+  if(!mazeExists){
+    e.preventDefault()
     alert('you need to generate your maze first bozo')
+    return
   }
+  //set line style based on 
+  if((<HTMLInputElement>e.target).checked){
+    ctx.strokeStyle = 'blue'
+  }else{
+    ctx.strokeStyle = 'white'
+  }
+  ctx.lineWidth = 2
+  //trace the parent path
+  let n = endingNode
+  ctx.beginPath()
+  ctx.moveTo(n.x,n.y)
+  while(n.parent != undefined){
+    ctx.lineTo(n.parent.x,n.parent.y)
+    n = n.parent
+  }
+  ctx.stroke()
+  //re-draw start and end nodes
+  startingNode.draw(ctx,blockSize)
+  endingNode.draw(ctx,blockSize)
 }
