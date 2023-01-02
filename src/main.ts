@@ -29,9 +29,9 @@ function setup(width:number,heigth:number,blockSizeP:number){
   if(!( width % blockSizeP == 0 || width % blockSizeP == 0))
     throw [true,new Error('Width and Heigth must be a multiple of blockSize')]
   //set up
-  ch = c.height = heigth
-  cw = c.width = width
   blockSize = blockSizeP
+  ch = c.height = heigth *blockSize
+  cw = c.width = width * blockSize
   nodes = makeNodeMap(cw,ch,blockSize) 
   //create start and end nodes
   startingNode = getStartingNode(nodes)
@@ -73,7 +73,7 @@ form.onsubmit= (e)=>{
       setup(
         parseFloat(data.get('width').toString()),
         parseFloat(data.get('heigth').toString()),
-        parseFloat(data.get('blockSize').toString()),
+        parseFloat(data.get('cellSize').toString()),
       )
     }catch(err){
       if(err[0]) alert(err[1])
