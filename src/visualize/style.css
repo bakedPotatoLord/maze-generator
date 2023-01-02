@@ -1,3 +1,18 @@
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@300&display=swap');
+
+body{
+  margin: 0px;
+  background-color: rgb(38, 38, 38);
+}
+
+p,
+input,
+label,
+button,
+a{
+  font-family: 'Open Sans', sans-serif;
+}
+
 canvas{
   border:2px solid black
 }
