@@ -1,8 +1,32 @@
-canvas{
-  border:2px solid black
+
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@300&display=swap');
+
+body{
+  margin: 10px;
+  background-color: rgb(38, 38, 38);
+}
+
+p,
+input,
+label,
+button,
+a{
+  font-family: 'Open Sans', sans-serif;
+  
+}
+
+
+p,
+a,
+label{
+  color:wheat;
 }
 
 form{
   margin-bottom: 10px;
   margin-top: 10px;
+  background-color: rgb(81, 73, 83);
+  width:max-content ;
+  padding:1%;
+  border-radius: 5px;
 }
