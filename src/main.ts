@@ -25,9 +25,6 @@ let endingNode:Node
 let mazeExists = false
 
 function setup(width:number,heigth:number,blockSizeP:number){
-  //form validation
-  if(!( width % blockSizeP == 0 || width % blockSizeP == 0))
-    throw [true,new Error('Width and Heigth must be a multiple of blockSize')]
   //set up
   blockSize = blockSizeP
   ch = c.height = heigth *blockSize
