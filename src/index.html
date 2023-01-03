@@ -15,27 +15,30 @@
 
       <table>
         <tr>
-          <th><label for="width">Maze Width</label></th>
-          <th><input type="number" name="width" value="400" min="5"></th>
+          <th><label for="width">Maze Width (Cells)</label></th>
+          <th><input type="number" name="width" value="20" min="5"></th>
         </tr>
         <tr>
-          <th><label for="heigth">Maze Height</label></th>
-          <th><input type="number" name="heigth" value="400" min="5"></th>
+          <th><label for="heigth">Maze Height (Cells)</label></th>
+          <th><input type="number" name="heigth" value="20" min="5"></th>
         </tr>
         <tr>
-          <th><label for="blockSize">Block Size</label></th>
-          <th><input type="number" name="blockSize" value="20" min="5"></th>
+          <th><label for="cellSize">Cell Size</label></th>
+          <th><input type="number" name="cellSize" value="20" min="5"></th>
         </tr>
       </table>
       
-      <div class="btns">
+      <div class="options">
+        <a href="./visualize/">Visualize Maze Generation</a>
         <input type="submit" value="Generate Maze">
-        <button id="showSolution">Show Solution</button>
-        <button id="d">Download Maze</button>
       </div>
 
-      <a href="./visualize/">visualize maze generation</a>
     </form>
+    <div class="mazeOptions" hidden>
+      <label for="showSolution">Show Solution</label>
+      <input type="checkbox" name="showSolution" id="showSolution">
+      <button id="d">Download Maze</button>
+    </div>
     <div class="stateContainer">
       <p id="state"></p>
     </div>

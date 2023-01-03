@@ -47,8 +47,8 @@ table tr th input{
   font-weight: bold;
 }
 
-.btns button,
-.btns input{
+input[type=submit],
+.mazeOptions button{
   border: none;
   padding: 4px;
   border-radius: 4px;
@@ -60,15 +60,24 @@ table tr th input{
   transition-duration: 250ms;
 }
 
-.btns button:hover,
-.btns input:hover{
-  background-color: rgb(38, 38, 38);
-}
 
 form a{
-  color: aliceblue;
-  text-decoration: none;
+  color: wheat;
+  text-decoration: underline;
 
+}
+
+.mazeOptions{
+  background-color: rgb(81, 73, 83);
+  border-radius: 20px;
+  text-align: center;
+  padding-bottom: 1%;
+  padding-top: 1%;
+  width:75%;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 10px;
+  color:whitesmoke
 }
 
 .stateContainer{

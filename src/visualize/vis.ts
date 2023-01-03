@@ -53,6 +53,8 @@ function draw(){
     que.unshift(chosen)
     
     ctx.clearRect(0,0,cw,ch)
+    ctx.fillStyle = 'white'
+    ctx.fillRect(0,0,cw,ch)
 
     ctx.strokeStyle = 'red'
     ctx.lineWidth= 4
@@ -77,6 +79,10 @@ form.onsubmit =e=>{
   e.preventDefault()
   state.innerHTML = 'Generating ...'
 
+  let data = new FormData(form)
+  cw = c.width = parseInt(data.get('size').toString())*blockSize
+  ch = c.height = parseInt(data.get('size').toString())*blockSize
+
   if(drawingCompleted){
     setup()
     draw()
@@ -84,12 +90,4 @@ form.onsubmit =e=>{
   }else{
     alert('Wait for visualization to complete before starting a new one. To abort drawing, reload the page.')
   }
-
-}
-
-document.querySelector('input')
-.onchange = ()=>{
-  let data = new FormData(form)
-  cw = c.width = parseInt(data.get('size').toString())*blockSize
-  ch = c.height = parseInt(data.get('size').toString())*blockSize
 }
