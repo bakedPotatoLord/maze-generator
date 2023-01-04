@@ -5,7 +5,6 @@ import bfs from "./bfs"
 
 let c = document.querySelector("canvas")
 let ctx = c.getContext("2d")
-let form = document.forms[0]
 let state = <HTMLParagraphElement>document.querySelector('#state')
 let mazeOptions = <HTMLDivElement>document.querySelector('.mazeOptions')
 
@@ -61,7 +60,8 @@ function draw(){
 }
 
 //form submission button
-form.onsubmit= (e)=>{
+document.forms[0]
+onsubmit= (e)=>{
   e.preventDefault()
   let data = (new FormData(<HTMLFormElement>e.target))
   state.innerHTML = 'generating ...'
