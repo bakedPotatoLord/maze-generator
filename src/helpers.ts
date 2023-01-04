@@ -1,7 +1,7 @@
 export const TAU = 2* Math.PI
 import Node, { nodeHash } from "./Node"
 
-export function makeNodeMap(cw:number,ch:number,blockSize:number){
+export function makeSquareNodeMap(cw:number,ch:number,blockSize:number){
   return new Map(
     Array((cw/blockSize)*(ch/blockSize)).fill(0).map((_el,i)=>{
       return new Node(
