@@ -90,5 +90,5 @@ export default class Node{
 
   toHash = ():nodeHash=> this.x+','+this.y
 
-  hashFrom = (x:number,y:number)=>x+','+y
+  hashFrom = (...args:number[])=>args.join(',')
 }
