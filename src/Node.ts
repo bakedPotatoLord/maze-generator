@@ -1,7 +1,10 @@
 export type nodeHash = string
+export type polygonIdentifier = |3|4|5|6
+
 
 export default class Node{
   static TAU = Math.PI *2
+  type:polygonIdentifier =4
   x: number
   y: number
   children:Node[] = []

@@ -1,10 +1,11 @@
-import Node from "./Node"
+import Node, { polygonIdentifier } from "./Node"
+
 
 export type nodeHash = string
 
 
 export default class HexNode extends Node{
-  type=6
+  type:polygonIdentifier=6
   constructor(x:number,y:number,parent?:Node){
     super(x,y,parent)
   }
