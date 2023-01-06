@@ -67,16 +67,7 @@ export default class HexNode extends Node{
     ].filter(el=> el ?? false)
   }
 
-  getBorderNodes(nodes:Map<nodeHash,Node>,blockSize:number){
-    return (<[number,number][]>[
-      [this.x+blockSize,this.y]
-      [this.x-blockSize,this.y]
-      [this.x+(blockSize/2),this.y+blockSize]
-      [this.x-(blockSize/2),this.y+blockSize]
-      [this.x+(blockSize/2),this.y-blockSize]
-      [this.x-(blockSize/2),this.y-blockSize]
-    ]).filter(el=> (!nodes.has(this.hashFrom(...el))) )
-  }
+  
 
   getViableNodes(nodes:Map<nodeHash,Node>,blockSize:number){
     let tNodes = this.getTouchingNodes(nodes,blockSize)
