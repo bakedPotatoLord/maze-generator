@@ -1,4 +1,4 @@
-import { getEndingNode, getStartingNode, makeNodeMap } from '../helpers';
+import { getEndingNode, getStartingNode, makeSquareNodeMap } from '../helpers';
 import Node from '../Node';
 
 const c = document.querySelector('canvas')
@@ -18,7 +18,7 @@ let que:Node[] = []
 let drawingCompleted = true
 
 function setup(){
-  nodes = makeNodeMap(cw,ch,blockSize)
+  nodes = makeSquareNodeMap(cw,ch,blockSize)
 
   nodes.forEach(n=>{
     n.visited = false
