@@ -14,20 +14,24 @@ export function makeSquareNodeMap(cw:number,ch:number,blockSize:number){
   )
 }
 
-export function makeHexNodeMap(cw:number,ch:number,blockSize:number){
+export function makeHexNodeMap(cw:number, ch:number, blockSize:number) {
+  // Calculate the distance between the center of each hexagon
+  const xDistance = blockSize ;
+  const yDistance =  blockSize ;
+
   const centers: HexNode[] = [];
-  for (let y = blockSize; y < ch; y += blockSize) {
-    // The x position of the first hexagon in each row is offset by half of the xDistance
-    let x = (((y/blockSize) % 2 === 0) ? blockSize / 2 : 0 )+blockSize
-    while (x < cw-(blockSize/2)) {
-      centers.push(new HexNode(x,y));
-      x += blockSize;
+  for (let y = yDistance ; Math.sqrt(3) / 2 *y+2 < ch; y += yDistance) {
+
+    let x = (((y / yDistance) % 2 === 0) ? xDistance / 2 : 0) +blockSize/2
+    while (x < cw ) {
+      centers.push(new HexNode(x, y));
+      x += xDistance;
     }
   }
 
   return new Map(
-    centers.map(el=>[el.toHash(),el])
-  )
+    centers.map(el => [el.toHash(), el])
+  );
 }
 
 export const getStartingNode = (map:Map<string,Node>)=>
