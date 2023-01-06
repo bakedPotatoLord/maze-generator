@@ -6,11 +6,7 @@ body{
   background-color: rgb(38, 38, 38);
 }
 
-p,
-input,
-label,
-button,
-a{
+*{
   font-family: 'Open Sans', sans-serif;
 }
 
@@ -37,11 +33,14 @@ table tr th{
   text-align: left;
 }
 
-table tr th label{
+label{
   color: wheat;
+  font-weight: bold;
 }
 
-table tr th input{
+input,
+select{
+  border: 2px inset rgb(118, 118, 118);
   background-color: grey;
   color:whitesmoke;
   font-weight: bold;

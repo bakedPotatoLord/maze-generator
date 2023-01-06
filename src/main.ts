@@ -1,11 +1,11 @@
 import Node from "./Node"
 import rdfs from "./rdfs"
-import { getEndingNode, getStartingNode, makeNodeMap} from "./helpers"
+import { getEndingNode, getStartingNode, makeHexNodeMap, makeSquareNodeMap} from "./helpers"
 import bfs from "./bfs"
+
 
 let c = document.querySelector("canvas")
 let ctx = c.getContext("2d")
-let form = document.forms[0]
 let state = <HTMLParagraphElement>document.querySelector('#state')
 let mazeOptions = <HTMLDivElement>document.querySelector('.mazeOptions')
 
@@ -24,12 +24,16 @@ let endingNode:Node
 //extra vars
 let mazeExists = false
 
-function setup(width:number,heigth:number,blockSizeP:number){
+function setup(width:number,heigth:number,blockSizeP:number,shape:number){
   //set up
   blockSize = blockSizeP
   ch = c.height = heigth *blockSize
   cw = c.width = width * blockSize
-  nodes = makeNodeMap(cw,ch,blockSize) 
+  if(shape== 4){
+    nodes = makeSquareNodeMap(cw,ch,blockSize) 
+  }else if(shape == 6){
+    nodes = makeHexNodeMap(cw,ch,blockSize)
+  }
   //create start and end nodes
   startingNode = getStartingNode(nodes)
   startingNode.isStartingNode = true
@@ -55,13 +59,69 @@ function draw(){
   //use breadth-first search because depth first will find "a" solutoion, but not "the" solutoin  
   bfs(startingNode,endingNode,nodes,blockSize,false) 
 
+  
+  if(startingNode.type ==6){
+    ctx.save()
+      drawHexBorder('x')
+      ctx.translate(0,ch-(blockSize))
+      drawHexBorder('x')
+    ctx.restore()
+
+    ctx.save()
+      drawHexBorder('y')
+      ctx.translate(cw-blockSize,0)
+      drawHexBorder('y',true)
+    ctx.restore()
+  }
+  
+  
   mazeExists = true
   state.innerHTML = ''
   mazeOptions.hidden = false
 }
 
+function drawHexBorder(axis:'x'|'y', flip?:boolean){
+
+  let wallLength = (blockSize/2)* (1 / Math.cos(Math.PI/6))
+  let xDist = blockSize / 2
+  let yDist = blockSize/(2 * Math.sqrt(3))
+  
+  let x= blockSize/2
+  let y = blockSize/4
+  ctx.beginPath()
+  ctx.moveTo(x,y)
+  if(axis == 'x'){
+    while(x < cw-xDist){
+      x+=xDist
+      y+= (y>blockSize/4)? -yDist : yDist
+      ctx.lineTo(x,y)
+    }
+  }else{
+    let i =flip?2:0 
+    while(y < ch-yDist*4){
+      if(i%4 == 0){
+        x+= -xDist
+        y+= yDist
+      }else if(i%4 == 1){
+        x+= 0
+        y+= wallLength
+      }else if(i%4 == 2){
+        x+= xDist 
+        y+= yDist
+      }else if(i%4 == 3){
+        x+= 0
+        y+= wallLength
+      }
+      ctx.lineTo(x,y)
+      i++
+    }
+  }
+  ctx.stroke()
+}
+
 //form submission button
-form.onsubmit= (e)=>{
+document.forms[0]
+onsubmit= (e)=>{
   e.preventDefault()
   let data = (new FormData(<HTMLFormElement>e.target))
   state.innerHTML = 'generating ...'
@@ -71,6 +131,7 @@ form.onsubmit= (e)=>{
         parseFloat(data.get('width').toString()),
         parseFloat(data.get('heigth').toString()),
         parseFloat(data.get('cellSize').toString()),
+        parseFloat(data.get('shape').toString()),
       )
     }catch(err){
       if(err[0]) alert(err[1])
@@ -108,16 +169,32 @@ form.onsubmit= (e)=>{
   }else{
     ctx.strokeStyle = 'white'
   }
-  ctx.lineWidth = 2
+  
   //trace the parent path
   let n = endingNode
+  if(n.type==6){
+    nodes.forEach(n=>n.y *= (Math.sqrt(3) / 2 ))
+  }
+
+  if((<HTMLInputElement>e.target).checked){
+    ctx.lineWidth = 2
+  }else{
+    ctx.lineWidth = 3.5
+  }
+  
   ctx.beginPath()
   ctx.moveTo(n.x,n.y)
   while(n.parent != undefined){
+    
+    ctx.lineTo(n.parent.x,n.parent.y)
+    ctx.lineTo(n.x,n.y)
     ctx.lineTo(n.parent.x,n.parent.y)
     n = n.parent
   }
   ctx.stroke()
+  if(n.type==6){
+    nodes.forEach(n=>n.y /= (Math.sqrt(3) / 2 ))
+  }
   //re-draw start and end nodes
   startingNode.draw(ctx,blockSize)
   endingNode.draw(ctx,blockSize)
