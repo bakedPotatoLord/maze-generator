@@ -2,6 +2,7 @@ import Node from "./Node"
 import rdfs from "./rdfs"
 import { getEndingNode, getStartingNode, makeHexNodeMap, makeSquareNodeMap} from "./helpers"
 import bfs from "./bfs"
+import HexNode from "./HexNode"
 
 let c = document.querySelector("canvas")
 let ctx = c.getContext("2d")
@@ -57,6 +58,18 @@ function draw(){
   nodes.forEach(el=>el.draw(ctx,blockSize))
   //use breadth-first search because depth first will find "a" solutoion, but not "the" solutoin  
   bfs(startingNode,endingNode,nodes,blockSize,false) 
+
+  /*
+  if(startingNode.type ==6){
+    nodes.forEach(n=>{
+      (<HexNode>n).getBorderNodes(nodes,blockSize)
+      .map(e=>new HexNode(...e))
+      .forEach(el=>{
+        (<HexNode>n).drawWallBetween(el,ctx,blockSize)
+      })
+    })
+  }
+  */
 
   mazeExists = true
   state.innerHTML = ''

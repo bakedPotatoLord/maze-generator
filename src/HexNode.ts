@@ -10,20 +10,6 @@ export default class HexNode extends Node{
     super(x,y,parent)
   }
 
-  topLine(ctx:CanvasRenderingContext2D,blockSize:number){
-    console.log('topline called')
-    ctx.strokeStyle = 'black'
-    
-    ctx.beginPath()
-    ctx.moveTo(-(blockSize/2),-(blockSize/2))
-    ctx.lineTo(-(blockSize/2),(blockSize/2))
-    ctx.stroke()
-    ctx.beginPath()
-    ctx.moveTo(-(blockSize/2),-(blockSize/2))
-    ctx.lineTo(-(blockSize/2),(blockSize/2))
-    ctx.stroke()
-  }
-
   draw(ctx:CanvasRenderingContext2D,blockSize:number){
 
     //this.y is a lie
@@ -44,32 +30,33 @@ export default class HexNode extends Node{
       ctx.fill()
     }
     ctx.strokeStyle ='rgb(0,0,0)'
-    // ctx.beginPath()
-    // ctx.arc(this.x,this.y,blockSize/5,0,Node.TAU)
-    // ctx.fill()
-    let wallLength = (blockSize/2)* (1 / Math.cos(Math.PI/6))
     
     this.wallsTo.forEach((el)=>{
-      ctx.save()
+      this.drawWallBetween(el,ctx,blockSize)
+    })
+    
+    this.y = ySave
+    
+  }
+  
+  drawWallBetween(el:Node,ctx:CanvasRenderingContext2D,blockSize:number){
+    let wallLength = (blockSize/2)* (1 / Math.cos(Math.PI/6))
+    ctx.save()
       ctx.translate(this.x,this.y)
       ctx.rotate(Math.atan2(this.y-el.y*(Math.sqrt(3) / 2 ),this.x-el.x)+ Math.PI)
 
       ctx.beginPath()
       ctx.moveTo(blockSize/2,wallLength/2)
       ctx.lineTo(blockSize/2,-wallLength/2)
-
-      ctx.stroke()
-      ctx.restore()
-    })
-
-    this.y = ySave
     
+      ctx.stroke()
+    ctx.restore()
+
   }
 
   addChildren=(...node:Node[])=>this.children.push(...node)
 
   getTouchingNodes(nodes:Map<nodeHash,Node>,blockSize:number){
-    blockSize
     return [
       nodes.get(this.hashFrom(this.x+blockSize,this.y)),
       nodes.get(this.hashFrom(this.x-blockSize,this.y)),
@@ -78,6 +65,17 @@ export default class HexNode extends Node{
       nodes.get(this.hashFrom(this.x+(blockSize/2),this.y-blockSize)),
       nodes.get(this.hashFrom(this.x-(blockSize/2),this.y-blockSize)),
     ].filter(el=> el ?? false)
+  }
+
+  getBorderNodes(nodes:Map<nodeHash,Node>,blockSize:number){
+    return (<[number,number][]>[
+      [this.x+blockSize,this.y]
+      [this.x-blockSize,this.y]
+      [this.x+(blockSize/2),this.y+blockSize]
+      [this.x-(blockSize/2),this.y+blockSize]
+      [this.x+(blockSize/2),this.y-blockSize]
+      [this.x-(blockSize/2),this.y-blockSize]
+    ]).filter(el=> (!nodes.has(this.hashFrom(...el))) )
   }
 
   getViableNodes(nodes:Map<nodeHash,Node>,blockSize:number){
