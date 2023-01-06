@@ -114,15 +114,24 @@ onsubmit= (e)=>{
     ctx.strokeStyle = 'white'
   }
   ctx.lineWidth = 2
+
   //trace the parent path
   let n = endingNode
+  if(n.type==6){
+    nodes.forEach(n=>n.y *= (Math.sqrt(3) / 2 ))
+  }
+  
   ctx.beginPath()
   ctx.moveTo(n.x,n.y)
   while(n.parent != undefined){
+    
     ctx.lineTo(n.parent.x,n.parent.y)
     n = n.parent
   }
   ctx.stroke()
+  if(n.type==6){
+    nodes.forEach(n=>n.y /= (Math.sqrt(3) / 2 ))
+  }
   //re-draw start and end nodes
   startingNode.draw(ctx,blockSize)
   endingNode.draw(ctx,blockSize)
