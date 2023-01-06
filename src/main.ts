@@ -15,6 +15,8 @@ ctx.fillStyle = "black"
 let cw:number
 let ch:number 
 let blockSize:number
+let numW:number
+let numH :number
 
 // declare graph algorithm vars
 let nodes:Map<string,Node>
@@ -26,13 +28,17 @@ let mazeExists = false
 
 function setup(width:number,heigth:number,blockSizeP:number,shape:number){
   //set up
+  numH = heigth
+  numW = width
   blockSize = blockSizeP
   ch = c.height = heigth *blockSize
   cw = c.width = width * blockSize
   if(shape== 4){
     nodes = makeSquareNodeMap(cw,ch,blockSize) 
   }else if(shape == 6){
+
     nodes = makeHexNodeMap(cw,ch,blockSize)
+    ch = c.height = (heigth) * blockSize * (Math.sqrt(3)/2)
   }
   //create start and end nodes
   startingNode = getStartingNode(nodes)
@@ -63,8 +69,12 @@ function draw(){
   if(startingNode.type ==6){
     ctx.save()
       drawHexBorder('x')
-      ctx.translate(0,ch-(blockSize))
-      drawHexBorder('x')
+      if(numH%2 == 0){
+        ctx.translate(0,(ch)- blockSize - 2)
+      }else{
+        ctx.translate(-blockSize/2,(ch)- blockSize -2)
+      }
+      drawHexBorder('x',true)
     ctx.restore()
 
     ctx.save()
@@ -91,10 +101,15 @@ function drawHexBorder(axis:'x'|'y', flip?:boolean){
   ctx.beginPath()
   ctx.moveTo(x,y)
   if(axis == 'x'){
-    while(x < cw-xDist){
-      x+=xDist
-      y+= (y>blockSize/4)? -yDist : yDist
+    x=0
+    y= blockSize/2
+    ctx.moveTo(x,y)
+    let i = flip?1:0 
+    while(x < cw+blockSize){
       ctx.lineTo(x,y)
+      x+=xDist
+      y+= (i%2==0)?-yDist:yDist
+      i++
     }
   }else{
     let i =flip?2:0 

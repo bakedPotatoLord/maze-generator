@@ -20,7 +20,7 @@ export function makeHexNodeMap(cw:number, ch:number, blockSize:number) {
   const yDistance =  blockSize ;
 
   const centers: HexNode[] = [];
-  for (let y = yDistance ; Math.sqrt(3) / 2 *y+2 < ch; y += yDistance) {
+  for (let y = yDistance ; y< ch; y += yDistance) {
 
     let x = (((y / yDistance) % 2 === 0) ? xDistance / 2 : 0) +blockSize/2
     while (x < cw ) {
