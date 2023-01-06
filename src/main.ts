@@ -70,9 +70,9 @@ function draw(){
     ctx.save()
       drawHexBorder('x')
       if(numH%2 == 0){
-        ctx.translate(0,(ch)- blockSize - 2)
+        ctx.translate(0,(ch)- blockSize - 1)
       }else{
-        ctx.translate(-blockSize/2,(ch)- blockSize -2)
+        ctx.translate(-blockSize/2,(ch)- blockSize -1)
       }
       drawHexBorder('x',true)
     ctx.restore()
