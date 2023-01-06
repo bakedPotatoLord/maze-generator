@@ -16,8 +16,7 @@ export default function bfs(start:Node,end:Node,nodes:Map<string,Node>,blockSize
         if(traceRoutes){
           ctx.strokeStyle = 'brown'
           ctx.beginPath()
-          ctx.moveTo(child.x,child.y)
-          ctx.lineTo(v.x,v.y)
+          child.drawLineTo(v,ctx)
           ctx.stroke()
         }
         child.visited = true
