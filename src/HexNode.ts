@@ -38,7 +38,7 @@ export default class HexNode extends Node{
       ctx.fill()
     }
     ctx.strokeStyle ='rgb(0,0,0)'
-
+    
     this.wallsTo.forEach((el)=>{
       ctx.save()
       ctx.translate(this.x,this.y)
@@ -47,13 +47,11 @@ export default class HexNode extends Node{
       ctx.beginPath()
       ctx.moveTo(blockSize/2,blockSize/2)
       ctx.lineTo(blockSize/2,-blockSize/2)
-      ctx.lineTo(blockSize/2,blockSize/2)
-      ctx.lineTo(blockSize/2,-blockSize/2)
-      ctx.lineTo(blockSize/2,blockSize/2)
-      ctx.lineTo(blockSize/2,-blockSize/2)
+
       ctx.stroke()
       ctx.restore()
     })
+    
   }
 
   addChildren=(...node:Node[])=>this.children.push(...node)
@@ -61,12 +59,12 @@ export default class HexNode extends Node{
   getTouchingNodes(nodes:Map<nodeHash,Node>,blockSize:number){
     blockSize
     return [
-      nodes.get(this.hashFrom(this.x,this.y)),
-      nodes.get(this.hashFrom(this.x,this.y)),
-      nodes.get(this.hashFrom(this.x,this.y)),
-      nodes.get(this.hashFrom(this.x,this.y)),
-      nodes.get(this.hashFrom(this.x,this.y)),
-      nodes.get(this.hashFrom(this.x,this.y)),
+      nodes.get(this.hashFrom(this.x+blockSize,this.y)),
+      nodes.get(this.hashFrom(this.x-blockSize,this.y)),
+      nodes.get(this.hashFrom(this.x+(blockSize/2),this.y+blockSize)),
+      nodes.get(this.hashFrom(this.x-(blockSize/2),this.y+blockSize)),
+      nodes.get(this.hashFrom(this.x+(blockSize/2),this.y-blockSize)),
+      nodes.get(this.hashFrom(this.x-(blockSize/2),this.y-blockSize)),
     ].filter(el=> el ?? false)
   }
 
