@@ -4,12 +4,9 @@ export type nodeHash = string
 
 
 export default class HexNode extends Node{
-
-
+  type=6
   constructor(x:number,y:number,parent?:Node){
     super(x,y,parent)
-
-
   }
 
   topLine(ctx:CanvasRenderingContext2D,blockSize:number){
@@ -27,6 +24,14 @@ export default class HexNode extends Node{
   }
 
   draw(ctx:CanvasRenderingContext2D,blockSize:number){
+
+    //this.y is a lie
+
+    // multiply it by (Math.sqrt(3) / 2 )
+
+    let ySave = this.y
+    this.y =Math.sqrt(3) / 2 *this.y
+
     if(this.isStartingNode){
       ctx.fillStyle = "green"
     }else if(this.isEndingNode){
@@ -38,19 +43,25 @@ export default class HexNode extends Node{
       ctx.fill()
     }
     ctx.strokeStyle ='rgb(0,0,0)'
+    // ctx.beginPath()
+    // ctx.arc(this.x,this.y,blockSize/5,0,Node.TAU)
+    // ctx.fill()
+    let wallLength = (blockSize/2)* (1 / Math.cos(Math.PI/6))
     
     this.wallsTo.forEach((el)=>{
       ctx.save()
       ctx.translate(this.x,this.y)
-      ctx.rotate(Math.atan2(this.y-el.y,this.x-el.x)+ Math.PI)
+      ctx.rotate(Math.atan2(this.y-el.y*(Math.sqrt(3) / 2 ),this.x-el.x)+ Math.PI)
 
       ctx.beginPath()
-      ctx.moveTo(blockSize/2,blockSize/2)
-      ctx.lineTo(blockSize/2,-blockSize/2)
+      ctx.moveTo(blockSize/2,wallLength/2)
+      ctx.lineTo(blockSize/2,-wallLength/2)
 
       ctx.stroke()
       ctx.restore()
     })
+
+    this.y = ySave
     
   }
 
@@ -77,5 +88,11 @@ export default class HexNode extends Node{
     )
   }
 
+  drawLineTo(node:Node,ctx:CanvasRenderingContext2D){
+    ctx.beginPath()
+    ctx.moveTo(this.x,this.y*(Math.sqrt(3) / 2 ))
+    ctx.lineTo(node.x,node.y*(Math.sqrt(3) / 2 ))
+    ctx.stroke()
+  }
 
 }
