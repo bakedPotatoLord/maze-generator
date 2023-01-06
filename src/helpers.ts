@@ -15,18 +15,18 @@ export function makeSquareNodeMap(cw:number,ch:number,blockSize:number){
 }
 
 export function makeHexNodeMap(cw:number,ch:number,blockSize:number){
-  cw/=blockSize
-  ch/=blockSize
+  const centers: HexNode[] = [];
+  for (let y = blockSize; y < ch; y += blockSize) {
+    // The x position of the first hexagon in each row is offset by half of the xDistance
+    let x = (((y/blockSize) % 2 === 0) ? blockSize / 2 : 0 )+blockSize
+    while (x < cw-(blockSize/2)) {
+      centers.push(new HexNode(x,y));
+      x += blockSize;
+    }
+  }
+
   return new Map(
-    Array((cw)*(ch)).fill(0).map((_el,i)=>{
-      let x = i%(cw)
-      let y = Math.floor(i/(cw))
-      return new HexNode(
-        (i%(cw)*(blockSize))+(blockSize/2),
-        (Math.floor(i/(cw))*(blockSize))+(blockSize/2)
-      )
-    })
-    .map(el=>[el.toHash(),el])
+    centers.map(el=>[el.toHash(),el])
   )
 }
 
