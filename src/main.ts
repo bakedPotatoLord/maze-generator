@@ -1,6 +1,6 @@
 import Node from "./Node"
 import rdfs from "./rdfs"
-import { getEndingNode, getStartingNode, makeNodeMap} from "./helpers"
+import { getEndingNode, getStartingNode, makeHexNodeMap, makeSquareNodeMap} from "./helpers"
 import bfs from "./bfs"
 
 let c = document.querySelector("canvas")
@@ -23,12 +23,16 @@ let endingNode:Node
 //extra vars
 let mazeExists = false
 
-function setup(width:number,heigth:number,blockSizeP:number){
+function setup(width:number,heigth:number,blockSizeP:number,shape:number){
   //set up
   blockSize = blockSizeP
   ch = c.height = heigth *blockSize
   cw = c.width = width * blockSize
-  nodes = makeNodeMap(cw,ch,blockSize) 
+  if(shape== 4){
+    nodes = makeSquareNodeMap(cw,ch,blockSize) 
+  }else if(shape == 6){
+    nodes = makeHexNodeMap(cw,ch,blockSize)
+  }
   //create start and end nodes
   startingNode = getStartingNode(nodes)
   startingNode.isStartingNode = true
@@ -71,6 +75,7 @@ onsubmit= (e)=>{
         parseFloat(data.get('width').toString()),
         parseFloat(data.get('heigth').toString()),
         parseFloat(data.get('cellSize').toString()),
+        parseFloat(data.get('shape').toString()),
       )
     }catch(err){
       if(err[0]) alert(err[1])

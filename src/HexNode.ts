@@ -4,15 +4,11 @@ export type nodeHash = string
 
 
 export default class HexNode extends Node{
-  t:number
-  bl:number
-  br:number
 
-  constructor(t:number,bl:number,br:number,parent?:Node){
-    super(null,null,parent)
-    this.t = t
-    this.bl = bl
-    this.br= br
+
+  constructor(x:number,y:number,parent?:Node){
+    super(x,y,parent)
+
 
   }
 
@@ -41,7 +37,7 @@ export default class HexNode extends Node{
       ctx.arc(this.x,this.y,blockSize/3,0,Node.TAU)
       ctx.fill()
     }
-    ctx.strokeStyle ='black'
+    ctx.strokeStyle ='rgb(0,0,0)'
 
     this.wallsTo.forEach((el)=>{
       ctx.save()
@@ -63,13 +59,14 @@ export default class HexNode extends Node{
   addChildren=(...node:Node[])=>this.children.push(...node)
 
   getTouchingNodes(nodes:Map<nodeHash,Node>,blockSize:number){
+    blockSize
     return [
-      nodes.get(this.hashFrom(this.t+blockSize,this.bl,this.br)),
-      nodes.get(this.hashFrom(this.t,this.bl+blockSize,this.br)),
-      nodes.get(this.hashFrom(this.t,this.bl,this.br+blockSize)),
-      nodes.get(this.hashFrom(this.t+blockSize,this.bl+blockSize,this.br)),
-      nodes.get(this.hashFrom(this.t,this.bl+blockSize,this.br+blockSize)),
-      nodes.get(this.hashFrom(this.t+blockSize,this.bl,this.br+blockSize)),
+      nodes.get(this.hashFrom(this.x,this.y)),
+      nodes.get(this.hashFrom(this.x,this.y)),
+      nodes.get(this.hashFrom(this.x,this.y)),
+      nodes.get(this.hashFrom(this.x,this.y)),
+      nodes.get(this.hashFrom(this.x,this.y)),
+      nodes.get(this.hashFrom(this.x,this.y)),
     ].filter(el=> el ?? false)
   }
 
@@ -82,6 +79,5 @@ export default class HexNode extends Node{
     )
   }
 
-  toHash = ():nodeHash=> this.t+','+this.bl+','+this.br
 
 }
