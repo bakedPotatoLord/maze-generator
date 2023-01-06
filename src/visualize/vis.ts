@@ -16,6 +16,7 @@ let nodes:Map<string,Node>
 let startingNode:Node
 let que:Node[] = []
 let drawingCompleted = true
+let lastRequest:number
 
 function setup(){
   nodes = makeSquareNodeMap(cw,ch,blockSize)
@@ -68,7 +69,7 @@ function draw(){
   } 
 
   if(que.length > 0){
-    requestAnimationFrame(draw)
+    lastRequest =  requestAnimationFrame(draw)
   }else{
     drawingCompleted = true
     state.innerHTML = 'Generation Complete'
@@ -77,17 +78,11 @@ function draw(){
 
 form.onsubmit =e=>{
   e.preventDefault()
+  cancelAnimationFrame(lastRequest)
   state.innerHTML = 'Generating ...'
-
   let data = new FormData(form)
   cw = c.width = parseInt(data.get('size').toString())*blockSize
   ch = c.height = parseInt(data.get('size').toString())*blockSize
-
-  if(drawingCompleted){
-    setup()
-    draw()
-    drawingCompleted =false
-  }else{
-    alert('Wait for visualization to complete before starting a new one. To abort drawing, reload the page.')
-  }
+  setup()
+  draw()
 }
