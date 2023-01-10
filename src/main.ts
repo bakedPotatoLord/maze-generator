@@ -138,6 +138,7 @@ function drawHexBorder(axis:'x'|'y', flip?:boolean){
 document.forms[0]
 onsubmit= (e)=>{
   e.preventDefault()
+  showSolution.checked = false
   let data = (new FormData(<HTMLFormElement>e.target))
   state.innerHTML = 'generating ...'
   requestAnimationFrame(()=>{
@@ -170,7 +171,8 @@ onsubmit= (e)=>{
   }
 }
 //show solution button
-(<HTMLInputElement>document.querySelector('#showSolution'))
+let showSolution = (<HTMLInputElement>document.querySelector('#showSolution'))
+showSolution
 .onclick = (e)=>{
   //data validation
   if(!mazeExists){
