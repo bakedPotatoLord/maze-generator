@@ -1,6 +1,7 @@
 export const TAU = 2* Math.PI
 import HexNode from "./HexNode"
 import Node, { nodeHash } from "./Node"
+import TriNode from "./TriNode"
 
 export function makeSquareNodeMap(cw:number,ch:number,blockSize:number){
   return new Map(
@@ -32,6 +33,35 @@ export function makeHexNodeMap(cw:number, ch:number, blockSize:number) {
   return new Map(
     centers.map(el => [el.toHash(), el])
   );
+}
+
+export function makeTriNodeMap(cw:number, blockSize:number){
+  cw /= blockSize
+  
+  let nodes:TriNode[] =[]
+  Array(cw).fill(undefined).map((_el,x)=>
+    Array(cw).fill(undefined)
+    .filter((_el,y)=>{
+
+
+      return (
+        (y<=x) && 
+        (y<= (-x)+cw )
+      )
+    })
+    .map((_el,y)=>
+      nodes.push(
+        y %2 == 0 ?
+        new TriNode((x*blockSize)+(blockSize/2),(y*blockSize)+(blockSize/2))
+        :
+        new TriNode((x*blockSize)+(blockSize/2)-10,(y*blockSize)+(blockSize/2))
+        )
+    )
+)
+
+  return new Map(
+    nodes.map(n=>[n.toHash(),n])
+  )
 }
 
 export const getStartingNode = (map:Map<string,Node>)=>
