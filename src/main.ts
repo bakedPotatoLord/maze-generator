@@ -1,6 +1,6 @@
 import Node from "./Node"
 import rdfs from "./rdfs"
-import { getEndingNode, getStartingNode, makeHexNodeMap, makeSquareNodeMap} from "./helpers"
+import { getEndingNode, getStartingNode, makeHexNodeMap, makeSquareNodeMap, makeTriNodeMap} from "./helpers"
 import bfs from "./bfs"
 
 
@@ -36,8 +36,10 @@ function setup(width:number,heigth:number,blockSizeP:number,shape:number){
   if(shape== 4){
     nodes = makeSquareNodeMap(cw,ch,blockSize) 
   }else if(shape == 6){
-
     nodes = makeHexNodeMap(cw,ch,blockSize)
+    ch = c.height = (heigth) * blockSize * (Math.sqrt(3)/2)
+  }else if(shape == 3){
+    nodes = makeTriNodeMap(cw,blockSize)
     ch = c.height = (heigth) * blockSize * (Math.sqrt(3)/2)
   }
   //create start and end nodes
@@ -83,8 +85,6 @@ function draw(){
       drawHexBorder('y',true)
     ctx.restore()
   }
-  
-  
   mazeExists = true
   state.innerHTML = ''
   mazeOptions.hidden = false
@@ -189,7 +189,7 @@ showSolution
   
   //trace the parent path
   let n = endingNode
-  if(n.type==6){
+  if(n.type==6 || n.type == 3){
     nodes.forEach(n=>n.y *= (Math.sqrt(3) / 2 ))
   }
 
@@ -209,7 +209,7 @@ showSolution
     n = n.parent
   }
   ctx.stroke()
-  if(n.type==6){
+  if(n.type==6 || n.type == 3){
     nodes.forEach(n=>n.y /= (Math.sqrt(3) / 2 ))
   }
   //re-draw start and end nodes
