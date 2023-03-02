@@ -35,7 +35,7 @@ function setup(){
   que = [startingNode]
 }
 
-function draw(){
+async function draw(){
   let current = que.shift()
   let unvisited = current
   .getTouchingNodes(nodes,blockSize)
@@ -69,7 +69,9 @@ function draw(){
   } 
 
   if(que.length > 0){
-    lastRequest =  requestAnimationFrame(draw)
+    await new Promise(res=>setTimeout(res,5))
+    
+    draw()
   }else{
     drawingCompleted = true
     state.innerHTML = 'Generation Complete'
