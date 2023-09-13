@@ -13,9 +13,4 @@ export function makeSquareNodeMap(cw:number,ch:number,blockSize:number){
   )
 }
 
-export const getStartingNode = (map:Map<string,Node>)=>
-  (<[nodeHash,Node]>map.entries().next().value)[1]
 
-export const getEndingNode = (map:Map<string,Node>) =>
-  Array.from(map.entries())
-  .pop()?.[1]
