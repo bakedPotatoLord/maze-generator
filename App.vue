@@ -21,13 +21,17 @@ enum scene {
 
 const currScene = scene.welcome
 
-let canvas = ref<HTMLCanvasElement>(null) 
+let canvas = ref<HTMLCanvasElement| null>(null) 
+
+const err = ():never=> {
+	throw new Error()
+}
 
 onMounted(()=>{
-	let c = canvas.value
+	let c = canvas.value ?? err()
 	console.log(c)
 	
-	let ctx = c.getContext("2d")
+	let ctx = c.getContext("2d") ?? err()
 	
 	ctx.fillStyle = "black"
 	
@@ -112,25 +116,25 @@ onMounted(()=>{
 
 	window.addEventListener("keydown",(e)=>{
 		player.erase(ctx)
-		console.log(n.get(player.x+","+player.y).walls)
+		console.log(n.get(player.x+","+player.y)?.walls)
 		if(e.key == "w" || e.key == "ArrowUp"){
-			if(!n.get(player.x+","+player.y).walls.top){
+			if(!n.get(player.x+","+player.y)?.walls?.top){
 				player.y -= 20
 				console.log("moveUp")
 			}
 		}
 		if(e.key == "s" || e.key == "ArrowDown"){
-			if(!n.get(player.x+","+player.y).walls.bottom){
+			if(!n.get(player.x+","+player.y)?.walls?.bottom){
 				player.y += 20
 			}
 		}
 		if(e.key == "a" || e.key == "ArrowLeft"){
-			if(!n.get(player.x+","+player.y).walls.left){
+			if(!n.get(player.x+","+player.y)?.walls?.left){
 				player.x -= 20
 			}
 		}
 		if(e.key == "d" || e.key == "ArrowRight"){
-			if(!n.get(player.x+","+player.y).walls.right){
+			if(!n.get(player.x+","+player.y)?.walls?.right){
 				player.x += 20
 			}
 		}

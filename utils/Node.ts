@@ -8,12 +8,13 @@ export default class Node{
   x: number
   y: number
   children:Node[] = []
-  parent:Node
+  parent?:Node
   isStartingNode = false
   isEndingNode = false
   visited = false
   generation= 0
   wallsTo:Node[]
+  walls?:{left:boolean,right:boolean,top:boolean,bottom:boolean}
   constructor(x:number,y:number,parent?:Node){
     this.x =x
     this.y=y
@@ -77,7 +78,8 @@ export default class Node{
 
   getViableNodes(nodes:Map<nodeHash,Node>,blockSize:number){
     let tNodes = this.getTouchingNodes(nodes,blockSize)
-    return tNodes
+    return (<Node[]>tNodes
+    .filter(el=>el!==undefined))
     .filter(
       el=>!this.wallsTo.includes(el) && 
       !el.wallsTo.includes(this)
