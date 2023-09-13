@@ -42,7 +42,7 @@ export default class Maze{
                 top: n.wallsTo.filter(no=>no.x == n.x && no.y ==n.y-20).length>0 || n.y == blocksize/2,
                 bottom: n.wallsTo.filter(no=>no.x == n.x && no.y ==n.y+20).length>0|| n.y == this.ch - blocksize/2,
             }
-        })
+        })  
         console.log("make constructed successfully")
     }
 

@@ -5,7 +5,6 @@
 </template>
 
 <script setup lang="ts">
-import {ref, onMounted} from 'vue'
 
 import Player from "./utils/Player"
 import Maze from './utils/Maze';
@@ -30,7 +29,7 @@ onMounted(()=>{
 	console.log("app mounted")
 	let c = canvas.value ?? err()
 	let ctx = c.getContext("2d") ?? err()
-	ctx.fillStyle = "black"
+	ctx.fillStyle = "black"  
 	
 	c.addEventListener("click",()=>{
 		c.requestFullscreen()
