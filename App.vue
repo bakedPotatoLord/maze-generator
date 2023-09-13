@@ -13,6 +13,13 @@ import { getEndingNode, getStartingNode, makeHexNodeMap, makeSquareNodeMap, make
 import bfs from "./utils/bfs"
 import Player from "./utils/Player"
 
+enum scene {
+	welcome ,
+	levelSelect,
+	game,
+}
+
+const currScene = scene.welcome
 
 let canvas = ref<HTMLCanvasElement>(null) 
 
@@ -43,7 +50,7 @@ onMounted(()=>{
 		c.requestFullscreen()
 	})
 
-	const n = setup(150,150,20,4)
+	const n = setup(50,50,20,4)
 	ctx.lineWidth = 1
 
 	const player = new Player(10,10,8)
@@ -57,16 +64,10 @@ onMounted(()=>{
 	  cw = c.width = width * blockSize
 	  if(shape== 4){
 	    nodes = makeSquareNodeMap(cw,ch,blockSize) 
-	  }else if(shape == 6){
-	    nodes = makeHexNodeMap(cw,ch,blockSize)
-	    ch = c.height = (heigth) * blockSize * (Math.sqrt(3)/2)
-	  }else if(shape == 3){
-	    nodes = makeTriNodeMap(cw,blockSize)
-	    ch = c.height = (heigth) * blockSize * (Math.sqrt(3)/2)
 	  }
 	  //create start and end nodes
 	  startingNode = getStartingNode(nodes)
-	  startingNode.isStartingNode = true
+		startingNode.isStartingNode = true
 	  endingNode = getEndingNode(nodes)
 	  endingNode.isEndingNode = true
 	  //do the grunt work
@@ -77,7 +78,13 @@ onMounted(()=>{
 	}
 	
 	function draw(){
-	  ctx.fillStyle  = 'white'
+
+		if(currScene == scene.welcome){
+			console.log("drawing welcome")
+			ctx.fillStyle = "red"
+			ctx.fillRect(10,10,10,10)
+		}else if(currScene == scene.game){
+			ctx.fillStyle  = 'white'
 	  ctx.clearRect(0,0,cw,ch)
 	  ctx.strokeStyle = 'black'
 	  ctx.lineWidth = 3
@@ -89,26 +96,8 @@ onMounted(()=>{
 	  nodes.forEach(el=>el.draw(ctx,blockSize))
 	  //use breadth-first search because depth first will find "a" solutoion, but not "the" solutoin  
 	  bfs(startingNode,endingNode,nodes,blockSize,false) 
-	
+		}
 	  
-	  if(startingNode.type ==6){
-	    ctx.save()
-	      drawHexBorder('x')
-	      if(numH%2 == 0){
-	        ctx.translate(0,(ch)- blockSize - 1)
-	      }else{
-	        ctx.translate(-blockSize/2,(ch)- blockSize -1)
-	      }
-	      drawHexBorder('x',true)
-	    ctx.restore()
-	
-	    ctx.save()
-	      drawHexBorder('y')
-	      ctx.translate(cw-blockSize,0)
-	      drawHexBorder('y',true)
-	    ctx.restore()
-	  }
-	  mazeExists = true
 	}
 
 	n.forEach(n=>{
