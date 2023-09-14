@@ -12,8 +12,8 @@ export default class Maze{
 
     // declare graph algorithm vars
 	readonly nodes:Map<string,Node>
-	startingNode:Node
-	endingNode?:Node
+	readonly startingNode:Node
+	readonly endingNode?:Node
 
     constructor(numW=20,numH=20,blocksize=20){
         this.cw = numW * blocksize
@@ -43,7 +43,7 @@ export default class Maze{
                 bottom: n.wallsTo.filter(no=>no.x == n.x && no.y ==n.y+20).length>0|| n.y == this.ch - blocksize/2,
             }
         })  
-        console.log("make constructed successfully")
+        console.log("maze constructed successfully")
     }
 
     draw(ctx:CanvasRenderingContext2D){
