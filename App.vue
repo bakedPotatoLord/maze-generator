@@ -72,7 +72,7 @@ onMounted(async () => {
 				if (prev.parent)
 					ctx.lineTo(prev.parent.x, prev.parent.y)
 				ctx.stroke()
-				await new Promise(res => setTimeout(res, 100))
+				await new Promise(res => setTimeout(res, 50))
 			}
 		}
 		requestAnimationFrame(draw)
