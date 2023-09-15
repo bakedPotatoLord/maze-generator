@@ -16,9 +16,7 @@ export default async function bfs(start:Node,end:Node,nodes:Map<string,Node>,blo
         if(traceRoutes){
           await new Promise(res=>setTimeout(res,traceSpeed ?? 100))
           ctx.strokeStyle = 'brown'
-          ctx.beginPath()
           child.drawLineTo(v,ctx)
-          ctx.stroke()
         }
         child.visited = true
         que.push(child)
