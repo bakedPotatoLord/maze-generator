@@ -13,7 +13,7 @@ export default class Node{
   isEndingNode = false
   visited = false
   generation= 0
-  wallsTo:Node[]
+  wallsTo?:Node[]
   walls?:{left:boolean,right:boolean,top:boolean,bottom:boolean}
   constructor(x:number,y:number,parent?:Node){
     this.x =x
@@ -45,10 +45,11 @@ export default class Node{
       ctx.beginPath()
       ctx.arc(this.x,this.y,blockSize/3,0,Node.TAU)
       ctx.fill()
+      
     }
     ctx.strokeStyle ='rgb(0,0,0)'
 
-    this.wallsTo.forEach((el)=>{
+    this.wallsTo?.forEach((el)=>{
       ctx.save()
       ctx.translate(this.x,this.y)
       ctx.rotate(Math.atan2(this.y-el.y,this.x-el.x)+ Math.PI)
@@ -68,7 +69,7 @@ export default class Node{
   addChildren=(...node:Node[])=>this.children.push(...node)
 
   getTouchingNodes(nodes:Map<nodeHash,Node>,blockSize:number){
-    return [
+    return <Node[]> [
       nodes.get(this.hashFrom(this.x+blockSize,this.y)),
       nodes.get(this.hashFrom(this.x,this.y+blockSize)),
       nodes.get(this.hashFrom(this.x-blockSize,this.y)),
@@ -81,8 +82,8 @@ export default class Node{
     return (<Node[]>tNodes
     .filter(el=>el!==undefined))
     .filter(
-      el=>!this.wallsTo.includes(el) && 
-      !el.wallsTo.includes(this)
+      el=>!this?.wallsTo?.includes(el) && 
+      !el?.wallsTo?.includes(this)
     )
   }
 
