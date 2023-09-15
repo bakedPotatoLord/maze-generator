@@ -15,11 +15,11 @@ export default function rdfs(nodes:Map<string,Node>,startingNode:Node,blockSize:
   let que = [startingNode]
   while(que.length > 0){
     //pick from bottom of stack
-    let current = que.shift()
+    let current =<Node> que.shift()
     // 
     let unvisited = current
       .getTouchingNodes(nodes,blockSize)
-      .filter((el)=>!el.visited)
+        .filter((el)=>!el?.visited)
     // only add nodes to stack if they can grow
     if(unvisited.length){ //type coersion go brrr
       // add current to top of stack
@@ -27,8 +27,8 @@ export default function rdfs(nodes:Map<string,Node>,startingNode:Node,blockSize:
       // chose random Node from unvisited
       let chosen = unvisited[Math.floor(Math.random()*unvisited.length)];
       // remove walls
-      current.wallsTo = current.wallsTo.filter(el=>el != chosen)
-      chosen.wallsTo = chosen.wallsTo.filter(el=>el!=current)
+      current.wallsTo = current?.wallsTo?.filter(el=>el != chosen)
+      chosen.wallsTo = chosen?.wallsTo?.filter(el=>el!=current)
       // im not explaining this line
       chosen.visited = true
       // add chosen to the bottom of stack (This is the DEPTH FIRST part)
