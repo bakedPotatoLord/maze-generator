@@ -63,7 +63,7 @@ onMounted(async () => {
 				true,
 				10
 			)
-			await new Promise(res => setTimeout(res, 1000))
+			//await new Promise(res => setTimeout(res, 1000))
 			welcomeMaze.draw(ctx)
 			for(let prev of <Node[]>welcomeSolution?.reverse()){
 				ctx.strokeStyle = 'green'
@@ -73,10 +73,7 @@ onMounted(async () => {
 					ctx.lineTo(prev.parent.x, prev.parent.y)
 				ctx.stroke()
 				await new Promise(res => setTimeout(res, 100))
-
 			}
-			
-
 		}
 		requestAnimationFrame(draw)
 	}
@@ -119,9 +116,10 @@ onMounted(async () => {
 	})
 })
 
-
-
-
 </script>
 
-<style></style>
+<style>
+canvas{
+	border: 4px solid black
+}
+</style>
