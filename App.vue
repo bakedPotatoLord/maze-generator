@@ -18,7 +18,7 @@ enum scene {
 	game,
 }
 
-let currScene = scene.welcome
+let currScene = scene.game
 
 let canvas = ref<HTMLCanvasElement | null>(null)
 
@@ -36,12 +36,17 @@ onMounted(async () => {
 		c.requestFullscreen()
 	})
 
+	const keys:any = {}
+
+
 	let welcomeMaze: Maze
 	let welcomeSolution: Node[] | null
 
-	const maze = new Maze(20, 20, 20)
-	const n = maze.nodes
-	const player = new Player(10, 10, 8)
+	let keyHandle: NodeJS.Timeout
+
+	let maze = new Maze(20, 20, 20)
+	let n = maze.nodes
+	let player = new Player(10, 10, 8)
 	await setupWelcome()
 	requestAnimationFrame(draw)
 
@@ -49,7 +54,9 @@ onMounted(async () => {
 		if (currScene == scene.game) {
 			maze.draw(ctx)
 			player.draw(ctx)
-		} else if (currScene == scene.welcome) {
+		}else if (currScene == scene.levelSelect) {
+			ctx.fillRect(0, 0, c.width, c.height)	
+		}else if (currScene == scene.welcome) {
 
 			welcomeMaze = new Maze(20, 20, 20)
 			
@@ -79,40 +86,65 @@ onMounted(async () => {
 	}
 
 	async function setupWelcome() {
-		console.log("setting up")
+		console.log("setting up welcome screen" )
 		c.width = 400
 		c.height = 400
-
-
 	}
 
-	window.addEventListener("keydown", (e) => {
-		player.erase(ctx)
-		const walls = n.get(player.x + "," + player.y)?.walls
-		console.log()
-		if (e.key == "w" || e.key == "ArrowUp") {
-			if (!walls?.top) {
-				player.y -= 20
-				console.log("moveUp")
-			}
-		}
-		if (e.key == "s" || e.key == "ArrowDown") {
-			if (walls?.bottom) {
-				player.y += 20
-			}
-		}
-		if (e.key == "a" || e.key == "ArrowLeft") {
-			if (walls?.left) {
-				player.x -= 20
-			}
-		}
-		if (e.key == "d" || e.key == "ArrowRight") {
-			if (!walls?.right) {
-				player.x += 20
-			}
-		}
-		player.draw(ctx)
+	function setupGame() {
+		console.log("setting up game screen" )
+		currScene = scene.game
+		maze = new Maze(20, 20, 20)
+		n = maze.nodes
+		player.reset()
+	}
 
+
+	function keyHandler() {
+		if(currScene == scene.welcome){
+			
+		}else if(currScene == scene.game){
+			player.erase(ctx)
+			const walls = n.get(player.x + "," + player.y)?.walls
+			if (keys["w"] || keys["ArrowUp"]) {
+				if (!walls?.top) {
+					player.y -= 20
+					console.log("moveUp")
+				}
+			}
+			if (keys["s"] || keys["ArrowDown"]) {
+				if (!walls?.bottom) {
+					player.y += 20
+				}
+			}
+			if (keys["a"] || keys["ArrowLeft"]) {
+				if (!walls?.left) {
+					player.x -= 20
+				}
+			}
+			if (keys["d"] || keys["ArrowRight"]) {
+				if (!walls?.right) {
+					player.x += 20
+				}
+			}
+			player.draw(ctx)
+		}
+	}
+
+
+
+	window.addEventListener("keydown", (e) => {
+		keys[e.key] = true
+		keyHandler()
+		setTimeout(() => {
+			clearInterval(keyHandle)
+			keyHandle = setInterval(keyHandler,1000)
+		},150)
+	})
+
+	window.addEventListener("keyup", (e) => {
+		keys[e.key] = false
+		clearInterval(keyHandle)
 	})
 })
 
