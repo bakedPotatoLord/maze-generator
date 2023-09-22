@@ -20,7 +20,16 @@ export default class LevelButton{
     ctx.strokeStyle = "black"
     ctx.fillRect(this.x,this.y,this.w,this.h)
     ctx.strokeRect(this.x,this.y,this.w,this.h)
-    ctx.fillText(this.level.toString(),this.x+this.w/2,this.y+this.h/2)
+    ctx.fillStyle = "black"
+    ctx.font = "30px Arial"
+    ctx.textAlign = "center"
+    ctx.fillText(this.level.toString(),this.x+this.w/2,this.y+this.h/2+10)
+  }
+
+  drawSelected(ctx:CanvasRenderingContext2D){
+    console.log("drawSelected")
+    ctx.strokeStyle = "yellow"
+    ctx.strokeRect(this.x,this.y,this.w,this.h)
   }
 
 }
