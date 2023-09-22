@@ -18,13 +18,18 @@ enum scene {
 	game,
 }
 
-let currScene = scene.game
-
+let currScene = scene.welcome
 let canvas = ref<HTMLCanvasElement | null>(null)
 
 const err = (): never => {
 	throw new Error()
 }
+
+const cw = 600
+const ch = 400
+const blocksize = 20
+const numW = cw/blocksize
+const numH = ch/blocksize
 
 onMounted(async () => {
 	console.log("app mounted")
@@ -37,16 +42,14 @@ onMounted(async () => {
 	})
 
 	const keys:any = {}
-
-
-	let welcomeMaze: Maze
+	let welcomeMaze = new Maze(numW, numH, blocksize)
 	let welcomeSolution: Node[] | null
 
 	let keyHandle: NodeJS.Timeout
 
-	let maze = new Maze(20, 20, 20)
+	let maze = new Maze(numW, numH, blocksize)
 	let n = maze.nodes
-	let player = new Player(10, 10, 8)
+	let player = new Player(blocksize/2, blocksize/2, 8)
 	await setupWelcome()
 	requestAnimationFrame(draw)
 
@@ -57,15 +60,13 @@ onMounted(async () => {
 		}else if (currScene == scene.levelSelect) {
 			ctx.fillRect(0, 0, c.width, c.height)	
 		}else if (currScene == scene.welcome) {
-
-			welcomeMaze = new Maze(20, 20, 20)
-			
+			welcomeMaze.reset()
 			welcomeMaze.draw(ctx)
 			welcomeSolution = await bfs(
 				welcomeMaze.startingNode,
 				<Node>welcomeMaze.endingNode,
 				welcomeMaze.nodes,
-				20,
+				blocksize,
 				ctx,
 				true,
 				10
@@ -87,18 +88,17 @@ onMounted(async () => {
 
 	async function setupWelcome() {
 		console.log("setting up welcome screen" )
-		c.width = 400
-		c.height = 400
+		c.width = cw
+		c.height = ch
 	}
 
 	function setupGame() {
 		console.log("setting up game screen" )
 		currScene = scene.game
-		maze = new Maze(20, 20, 20)
+		maze.reset()
 		n = maze.nodes
 		player.reset()
 	}
-
 
 	function keyHandler() {
 		if(currScene == scene.welcome){
@@ -130,8 +130,6 @@ onMounted(async () => {
 			player.draw(ctx)
 		}
 	}
-
-
 
 	window.addEventListener("keydown", (e) => {
 		keys[e.key] = true
