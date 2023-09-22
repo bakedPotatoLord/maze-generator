@@ -6,6 +6,15 @@ export default class LevelSelect {
   ch: number
   selected: LevelButton
 
+  static readonly levels = Array(12)
+    .fill(0)
+    .map((_, i) => {
+      return {
+        w: 400 + (i * 100),
+        h: Math.floor(400 + (i * 100) / 20) * 20,
+      }
+    })
+
   constructor(cw: number, ch: number) {
     this.cw = cw
     this.ch = ch
@@ -30,15 +39,15 @@ export default class LevelSelect {
   }
 
   moveLeft() {
-    this.selected = this.levels[this.selected.level - 1]?? this.selected
+    this.selected = this.levels[this.selected.level - 1] ?? this.selected
   }
   moveRight() {
-    this.selected = this.levels[this.selected.level + 1]?? this.selected
+    this.selected = this.levels[this.selected.level + 1] ?? this.selected
   }
-  moveUp(){
-    this.selected = this.levels[this.selected.level - 4]?? this.selected
+  moveUp() {
+    this.selected = this.levels[this.selected.level - 4] ?? this.selected
   }
-  moveDown(){
-    this.selected = this.levels[this.selected.level + 4]?? this.selected
+  moveDown() {
+    this.selected = this.levels[this.selected.level + 4] ?? this.selected
   }
 }
