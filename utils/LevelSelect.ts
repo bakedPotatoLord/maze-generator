@@ -6,18 +6,18 @@ export default class LevelSelect {
   ch: number
   selected: LevelButton
 
-  static readonly levels = Array(12)
+  static readonly levelMap = Array(12)
     .fill(0)
     .map((_, i) => {
       return {
-        w: 400 + (i * 100),
-        h: Math.floor(400 + (i * 100) / 20) * 20,
+        w: 600 + (i * 100),
+        h: Math.floor(((600 + (i * 100) )* (2/3) )/ 20) * 20,
       }
     })
 
-  constructor(cw: number, ch: number) {
-    this.cw = cw
-    this.ch = ch
+  constructor() {
+    this.cw = 600
+    this.ch = 400
     this.levels = Array(12).fill(0).map((_, i) =>
       new LevelButton(
         (i * 140 + (40)) % 560,
@@ -49,5 +49,9 @@ export default class LevelSelect {
   }
   moveDown() {
     this.selected = this.levels[this.selected.level + 4] ?? this.selected
+  }
+
+  getLevel(){
+     return LevelSelect.levelMap[this.selected.level]
   }
 }

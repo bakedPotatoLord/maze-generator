@@ -46,7 +46,15 @@ export default class Maze{
         console.log("maze constructed successfully")
     }
 
-    reset(){
+    reset(numW=20,numH=20,blocksize=20){
+
+        this.cw = numW * blocksize
+        this.ch = numH * blocksize
+        this.blocksize = blocksize
+
+        this.numW = numW
+        this.numH = numH
+
         this.nodes = makeSquareNodeMap(this.cw,this.ch,this.blocksize) 
 
         //create start and end nodes

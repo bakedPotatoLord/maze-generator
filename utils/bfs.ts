@@ -9,7 +9,7 @@ export default async function bfs(start:Node,end:Node,nodes:Map<string,Node>,blo
   while(que.length >0){
     let v = <Node>que.shift()
     for(let child of v.getViableNodes(nodes,blockSize)){
-      
+      if(GlobalState.leaveWelcome) return null
       if(!child.visited){
         child.generation = v.generation+1
         child.parent = v

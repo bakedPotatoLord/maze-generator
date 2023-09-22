@@ -8,6 +8,7 @@
 import Player from "~/utils/Player";
 import Maze from "~/utils/Maze";
 import type Node from "~/utils/Node";
+import GlobalState from "~/utils/GlobalState";
 
 console.log("app run");
 
@@ -17,18 +18,18 @@ enum scene {
   game,
 }
 
-let currScene = scene.levelSelect;
+let currScene = scene.welcome;
 let canvas = ref<HTMLCanvasElement | null>(null);
 
 const err = (): never => {
   throw new Error();
 };
 
-const cw = 600;
-const ch = 400;
+let cw = 1200;
+let ch = 800;
 const blocksize = 20;
-const numW = cw / blocksize;
-const numH = ch / blocksize;
+const numW = () => cw / blocksize;
+const numH = () => ch / blocksize;
 
 onMounted(async () => {
   console.log("app mounted");
@@ -41,13 +42,13 @@ onMounted(async () => {
   });
 
   const keys: any = {};
-  const levelSelect = new LevelSelect(cw, ch);
-  let welcomeMaze = new Maze(numW, numH, blocksize);
+  const levelSelect = new LevelSelect();
+  let welcomeMaze = new Maze(numW(), numH(), blocksize);
   let welcomeSolution: Node[] | null;
 
   let keyHandle: NodeJS.Timeout;
 
-  let maze = new Maze(numW, numH, blocksize);
+  let maze = new Maze(numW(), numH(), blocksize);
   let n = maze.nodes;
   let player = new Player(blocksize / 2, blocksize / 2, 8);
   await setupWelcome();
@@ -63,7 +64,7 @@ onMounted(async () => {
 
       levelSelect.draw(ctx);
     } else if (currScene == scene.welcome) {
-      welcomeMaze.reset();
+      welcomeMaze.reset(cw / 20, ch / 20, blocksize);
       welcomeMaze.draw(ctx);
       welcomeSolution = await bfs(
         welcomeMaze.startingNode,
@@ -72,8 +73,13 @@ onMounted(async () => {
         blocksize,
         ctx,
         true,
-        10
+        0
       );
+      if (GlobalState.leaveWelcome){
+				setupLevelSelect()
+				requestAnimationFrame(draw);
+				return;
+			} 
       welcomeMaze.draw(ctx);
       for (let prev of <Node[]>welcomeSolution?.reverse()) {
         ctx.strokeStyle = "green";
@@ -82,6 +88,11 @@ onMounted(async () => {
         if (prev.parent) ctx.lineTo(prev.parent.x, prev.parent.y);
         ctx.stroke();
         await new Promise((res) => setTimeout(res, 50));
+				if (GlobalState.leaveWelcome){
+					setupLevelSelect()
+					requestAnimationFrame(draw);
+					return
+				}
       }
     }
     requestAnimationFrame(draw);
@@ -93,12 +104,23 @@ onMounted(async () => {
     c.height = ch;
   }
 
-  function setupGame() {
+  function setupLevelSelect() {
+		cw = 600;
+		ch = 400;
+    c.width = cw
+    c.height = ch
+  }
+
+  function setupGame(w: number, h: number) {
+    cw = w;
+    ch = h;
     console.log("setting up game screen");
-    currScene = scene.game;
-    maze.reset();
+    maze.reset(cw / 20, ch / 20, blocksize);
     n = maze.nodes;
     player.reset();
+    currScene = scene.game;
+    c.width = cw;
+    c.height = ch;
   }
 
   function keyHandler() {
@@ -132,13 +154,20 @@ onMounted(async () => {
 
   window.addEventListener("keydown", (e) => {
     if (currScene == scene.welcome) {
-			
     } else if (currScene == scene.levelSelect) {
       if (["ArrowUp", "w"].includes(e.key)) levelSelect.moveUp();
       else if (["ArrowDown", "s"].includes(e.key)) levelSelect.moveDown();
       else if (["ArrowLeft", "a"].includes(e.key)) levelSelect.moveLeft();
       else if (["ArrowRight", "d"].includes(e.key)) levelSelect.moveRight();
+      else if (e.key == " ") {
+        const l = levelSelect.getLevel();
+        setupGame(l.w, l.h);
+      }
     } else if (currScene == scene.game) {
+      if (e.key == " ") {
+        currScene = scene.levelSelect;
+        return;
+      }
       keys[e.key] = true;
       keyHandler();
       setTimeout(() => {
@@ -150,6 +179,7 @@ onMounted(async () => {
 
   window.addEventListener("keyup", (e) => {
     if (currScene == scene.welcome) {
+      GlobalState.leaveWelcome = true;
       currScene = scene.levelSelect;
     } else if (currScene == scene.game) {
       keys[e.key] = false;

@@ -27,7 +27,6 @@ export default class LevelButton{
   }
 
   drawSelected(ctx:CanvasRenderingContext2D){
-    console.log("drawSelected")
     ctx.strokeStyle = "yellow"
     ctx.strokeRect(this.x,this.y,this.w,this.h)
   }
