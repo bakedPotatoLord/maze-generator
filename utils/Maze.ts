@@ -4,16 +4,16 @@ import rdfs from './rdfs'
 
 export default class Maze{
     // declare canvas vars
-    cw:number
-    ch:number
-    blocksize:number
-    numW: number
-    numH: number
+    private cw:number
+    private ch:number
+    private blocksize:number
+    private numW: number
+    private numH: number
 
     // declare graph algorithm vars
-	readonly nodes:Map<string,Node>
-	readonly startingNode:Node
-	readonly endingNode?:Node
+	nodes:Map<string,Node>
+	startingNode:Node
+	endingNode?:Node
 
     constructor(numW=20,numH=20,blocksize=20){
         this.cw = numW * blocksize
@@ -44,6 +44,29 @@ export default class Maze{
             }
         })  
         console.log("maze constructed successfully")
+    }
+
+    reset(){
+        this.nodes = makeSquareNodeMap(this.cw,this.ch,this.blocksize) 
+
+        //create start and end nodes
+        this.startingNode = this.nodes.entries().next().value[1]
+        if(this.startingNode) this.startingNode.isStartingNode = true
+        this.endingNode = Array.from(this.nodes.entries())
+        .pop()?.[1]
+        if(this.endingNode) this.endingNode.isEndingNode = true
+
+        //do the grunt work
+	    rdfs(this.nodes,this.startingNode,this.blocksize)    
+
+        this.nodes.forEach(n=>{
+            n.walls ={
+                left:( n?.wallsTo?.filter(no=>no.x == n.x-20 && no.y ==n.y)?.length?? 0) > 0 || n.x == this.blocksize/2,
+                right:( n?.wallsTo?.filter(no=>no.x == n.x+20 && no.y ==n.y)?.length?? 0)>0 || n.x == this.cw - this.blocksize/2,
+                top:( n?.wallsTo?.filter(no=>no.x == n.x && no.y ==n.y-20)?.length?? 0)>0 || n.y == this.blocksize/2,
+                bottom:( n?.wallsTo?.filter(no=>no.x == n.x && no.y ==n.y+20)?.length?? 0) >0|| n.y == this.ch - this.blocksize/2,
+            }
+        }) 
     }
 
     draw(ctx:CanvasRenderingContext2D){
