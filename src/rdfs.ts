@@ -4,7 +4,9 @@ import type Node from './Node';
  * @author Josiah Hamm / @bakedPotatoLord
  * @license MIT
  */
-export default function rdfs(nodes:Map<string,Node>,startingNode:Node,blockSize:number){
+export default  function* rdfs(nodes:Map<string,Node>,startingNode:Node,blockSize:number){
+  const allNodes = nodes.size*2
+  let i = 0
   // reset all nodes to default state
   nodes.forEach(n=>{
     n.visited = false
@@ -14,6 +16,8 @@ export default function rdfs(nodes:Map<string,Node>,startingNode:Node,blockSize:
   startingNode.visited = true
   let que = [startingNode]
   while(que.length > 0){
+    i++
+    yield (i/allNodes)
     //pick from bottom of stack
     let current = que.shift()
     // 
