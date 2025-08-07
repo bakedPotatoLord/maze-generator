@@ -2,7 +2,9 @@ import Node from "./Node"
 import rdfs from "./rdfs"
 import { getEndingNode, getStartingNode, makeHexNodeMap, makeSquareNodeMap, makeTriNodeMap} from "./helpers"
 import bfs from "./bfs"
+import svg from "svg-builder"
 
+export type context = CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D
 
 let c = document.querySelector("canvas")
 let ctx = c.getContext("2d")
@@ -25,6 +27,29 @@ let endingNode:Node
 
 //extra vars
 let mazeExists = false
+
+
+let render = svg.newInstance()
+
+
+render.width('100px');
+render.height('100px');
+
+render.rect({
+  width: 50,
+  height: 50,
+  fill: 'white',
+  stroke: 'black',
+  strokeWidth: 2,
+  x: 0,
+  y: 0
+})
+
+let done = render.render()
+
+console.log(done)
+
+document.querySelector('#svg').innerHTML = done
 
 function setup(width:number,heigth:number,blockSizeP:number,shape:number){
   //set up
