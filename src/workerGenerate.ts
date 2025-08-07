@@ -41,10 +41,6 @@ async function realtimeGenerate(width: number, heigth: number, blockSizeP: numbe
   const blockSize = blockSizeP
   let ch = c.height = heigth * blockSize
   let cw = c.width = width * blockSize
-
-
-
-
   if (shape == 4) {
     nodes = makeSquareNodeMap(cw, ch, blockSize)
   } else if (shape == 6) {
@@ -54,17 +50,14 @@ async function realtimeGenerate(width: number, heigth: number, blockSizeP: numbe
     nodes = makeTriNodeMap(cw, blockSize)
     ch = c.height = (heigth) * blockSize * (Math.sqrt(3) / 2)
   }
+
   //create start and end nodes
   startingNode = getStartingNode(nodes)
   startingNode.isStartingNode = true
   endingNode = getEndingNode(nodes)
   endingNode.isEndingNode = true
+
   //do the grunt work
-
-
-
-
-
   for (const completion of rdfs(nodes, startingNode, blockSize)) {
 
     postMessage(<workerResponse>{
@@ -74,50 +67,49 @@ async function realtimeGenerate(width: number, heigth: number, blockSizeP: numbe
     })
   }
 
-  
-    //draw rect border
-    ctx.fillStyle = 'white'
-    ctx.clearRect(0, 0, cw, ch)
-    ctx.strokeStyle = 'black'
-    ctx.lineWidth = 2
-    ctx.fillRect(0, 0, cw, ch)
-    ctx.beginPath
-    ctx.rect(1, 1, cw - 1, ch - 1)
-    ctx.stroke()
-    //draw all node
-    let i = 0
-    const count = nodes.size
-    for (const node of nodes.values()) {
-      node.draw(ctx, blockSize)
-      i++;
-      
-      postMessage(<workerResponse>{
-        completion: i / count,
-        state: 'draw',
-        done: false
-      })
+  //draw rect border
+  ctx.fillStyle = 'white'
+  ctx.clearRect(0, 0, cw, ch)
+  ctx.strokeStyle = 'black'
+  ctx.lineWidth = 2
+  ctx.fillRect(0, 0, cw, ch)
+  ctx.beginPath
+  ctx.rect(1, 1, cw - 1, ch - 1)
+  ctx.stroke()
+  //draw all node
+  let i = 0
+  const count = nodes.size
+  for (const node of nodes.values()) {
+    node.draw(ctx, blockSize)
+    i++;
+
+    postMessage(<workerResponse>{
+      completion: i / count,
+      state: 'draw',
+      done: false
+    })
+  }
+  //use breadth-first search because depth first will find "a" solutoion, but not "the" solutoin  
+  bfs(startingNode, endingNode, nodes, blockSize, false)
+
+
+  if (startingNode.type == 6) {
+    ctx.save()
+    drawHexBorder('x')
+    if (numH % 2 == 0) {
+      ctx.translate(0, (ch) - blockSize - 1)
+    } else {
+      ctx.translate(-blockSize / 2, (ch) - blockSize - 1)
     }
-    //use breadth-first search because depth first will find "a" solutoion, but not "the" solutoin  
-    bfs(startingNode, endingNode, nodes, blockSize, false)
+    drawHexBorder('x', true)
+    ctx.restore()
 
-
-    if (startingNode.type == 6) {
-      ctx.save()
-      drawHexBorder('x')
-      if (numH % 2 == 0) {
-        ctx.translate(0, (ch) - blockSize - 1)
-      } else {
-        ctx.translate(-blockSize / 2, (ch) - blockSize - 1)
-      }
-      drawHexBorder('x', true)
-      ctx.restore()
-
-      ctx.save()
-      drawHexBorder('y')
-      ctx.translate(cw - blockSize, 0)
-      drawHexBorder('y', true)
-      ctx.restore()
-    }
+    ctx.save()
+    drawHexBorder('y')
+    ctx.translate(cw - blockSize, 0)
+    drawHexBorder('y', true)
+    ctx.restore()
+  }
 
   postMessage(<workerResponse>{
     completion: 1,
@@ -126,7 +118,7 @@ async function realtimeGenerate(width: number, heigth: number, blockSizeP: numbe
     imageData: ctx.getImageData(0, 0, cw, ch)
   })
   return;
-  
+
 
   function drawHexBorder(axis: 'x' | 'y', flip?: boolean) {
 
