@@ -1,3 +1,5 @@
+import { context } from "./main"
+
 export type nodeHash = string
 export type polygonIdentifier = |3|4|5|6
 
@@ -20,7 +22,7 @@ export default class Node{
     this.parent = parent
   }
 
-  topLine(ctx:CanvasRenderingContext2D,blockSize:number){
+  topLine(ctx:context,blockSize:number){
     console.log('topline called')
     ctx.strokeStyle = 'black'
     
@@ -34,7 +36,7 @@ export default class Node{
     ctx.stroke()
   }
 
-  draw(ctx:CanvasRenderingContext2D,blockSize:number){
+  draw(ctx:context,blockSize:number){
     if(this.isStartingNode){
       ctx.fillStyle = "green"
     }else if(this.isEndingNode){
@@ -84,7 +86,7 @@ export default class Node{
     )
   }
 
-  drawLineTo(node:Node,ctx:CanvasRenderingContext2D){
+  drawLineTo(node:Node,ctx:context){
     ctx.beginPath()
     ctx.moveTo(this.x,this.y)
     ctx.lineTo(node.x,node.y)

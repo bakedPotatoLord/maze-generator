@@ -1,3 +1,4 @@
+import { context } from "./main"
 import Node, { polygonIdentifier } from "./Node"
 
 
@@ -10,7 +11,7 @@ export default class TriNode extends Node{
     super(x,y,parent)
   }
 
-  draw(ctx:CanvasRenderingContext2D,blockSize:number){
+  draw(ctx:context,blockSize:number){
 
     //this.y is a lie
 
@@ -45,7 +46,7 @@ export default class TriNode extends Node{
   }
   
   
-  drawWallBetween(el:Node,ctx:CanvasRenderingContext2D,blockSize:number){
+  drawWallBetween(el:Node,ctx:context,blockSize:number){
     let wallLength = (blockSize/2)* (1 / Math.cos(Math.PI/6))
     ctx.save()
       ctx.translate(this.x,this.y)
@@ -81,7 +82,7 @@ export default class TriNode extends Node{
     )
   }
 
-  drawLineTo(node:Node,ctx:CanvasRenderingContext2D){
+  drawLineTo(node:Node,ctx:context){
     ctx.beginPath()
     ctx.moveTo(this.x,this.y*(Math.sqrt(3) / 2 ))
     ctx.lineTo(node.x,node.y*(Math.sqrt(3) / 2 ))
