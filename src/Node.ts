@@ -34,7 +34,7 @@ export default class Node{
     ctx.stroke()
   }
 
-  draw(ctx:OffscreenCanvasRenderingContext2D,blockSize:number){
+  draw(ctx:OffscreenCanvasRenderingContext2D| CanvasRenderingContext2D,blockSize:number){
     if(this.isStartingNode){
       ctx.fillStyle = "green"
     }else if(this.isEndingNode){
@@ -84,7 +84,7 @@ export default class Node{
     )
   }
 
-  drawLineTo(node:Node,ctx:OffscreenCanvasRenderingContext2D){
+  drawLineTo(node:Node,ctx:OffscreenCanvasRenderingContext2D|CanvasRenderingContext2D){
     ctx.beginPath()
     ctx.moveTo(this.x,this.y)
     ctx.lineTo(node.x,node.y)

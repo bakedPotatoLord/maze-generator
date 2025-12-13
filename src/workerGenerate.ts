@@ -33,7 +33,7 @@ async function realtimeGenerate(width: number, heigth: number, blockSizeP: numbe
 
   let imageData: ImageData
   const c = new OffscreenCanvas(0, 0)
-  const ctx = c.getContext('2d')
+  const ctx = <CanvasRenderingContext2D> <unknown>c.getContext('2d')
 
   //set up
   const numH = heigth
